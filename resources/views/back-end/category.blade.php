@@ -33,6 +33,10 @@
 @endsection
 @section('scripts')
     <script>
+
+
+
+
         const UploadImage = (form) => {
             let payloads = new FormData($(form)[0]);
             $.ajax({
@@ -45,6 +49,7 @@
                 success: function (response) {
                     if(response.status == 200){
                         let img = `
+                            <input type="hidden" name="category-image" value="${response.image}">
                             <img style="width:400px;" src="{{ asset('uploads/temp/${response.image}') }}" >
                             <button type="button" onclick="CancelImage('${response.image}')" class="btn btn_cancle btn-danger rounded-0 btn-sm">cancel</button>
                         `;
@@ -78,5 +83,26 @@
                 });
             }
         }
+
+
+        const StoreCategory = (form) => {
+            let payloads = new FormData($(form)[0]);
+            $.ajax({
+                type: "POST",
+                url: "{{ route('category.store') }}",
+                data: payloads,
+                dataType: "json",
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if(response.status == 200){
+                        Message(response.message);
+                        $("#modalCreateCategory").modal('hide');
+                        $(form).trigger('reset');
+                    }
+                }
+            });
+        }
+
     </script>
 @endsection

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
@@ -64,7 +65,38 @@ class CategoryController extends Controller
    
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(),[
+            'name' => 'required'
+        ]);
+
+        if($validator->passes()){
+            //store to db
+            $category = new Category();
+            $category->name = $request->name;
+            $category->status = $request->status;
+
+            $tempDir = public_path("uploads/temp/".$request->input('category-image'));
+            $cateDir = public_path("uploads/category/".$request->input('category-image'));
+
+            if(File::exists($tempDir)){
+                File::copy($tempDir,$cateDir);
+                File::delete($tempDir);
+            }
+
+            $category->save();
+
+            return response([
+                'status' => 200,
+                'message' => "Category created successful"
+            ]);
+        }else{
+            return response()->json([
+               'status' => 500,
+                'error' => $validator->errors(),
+            ]);
+        }
+
+        
     }
 
    
