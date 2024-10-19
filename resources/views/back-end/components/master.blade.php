@@ -20,6 +20,9 @@
     <!-- End Layout styles -->
     <link rel="shortcut icon" href="{{ asset('back-end/assets/images/favicon.ico') }}" />
 
+    <!-- Bootstrap icon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
     <!-- Toastify messages -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
@@ -60,6 +63,24 @@
       </div>
       <!-- page-body-wrapper ends -->
     </div>
+
+    
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalSearch" tabindex="-5" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog  modal-dialog-centered" style="max-width: 40%">
+        <div class="modal-content">
+          <div class="modal-body p-4 mt-3">
+              <div class="form-group">
+                  <input type="text" class=" form-control" style="padding: 20px;" name="search" id="searchBox" placeholder="Search items here....">
+                  <button type="button" class="btn btn-primary btn-sm ml-2 searchBtn" id="searchBtn">Search</button>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- container-scroller -->
 
     <!-- plugins:js -->
@@ -110,6 +131,7 @@
         }).showToast();
        }
 
+     
     </script>
 
     @yield("scripts")
