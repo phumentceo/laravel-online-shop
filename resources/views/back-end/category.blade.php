@@ -83,5 +83,30 @@
                 });
             }
         }
+
+
+        const StoreCategory = (form) => {
+            let payloads = new FormData($(form)[0]);
+            $.ajax({
+                type: "POST",
+                url: "{{ route('category.store') }}",
+                data: payloads,
+                dataType: "json",
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if(response.status == 200){
+                        $("#modalCreateCategory").modal("hide");
+                        $(form).trigger("reset");
+                        $(".name").removeClass("is-invalid").siblings("p").removeClass("text-danger").text("")
+                        $(".show-image-category").html("");
+                        Message(response.message);
+                        CategoryList();
+                    }else{
+                        $(".name").addClass("is-invalid").siblings("p").addClass("text-danger").text(response.error.name);
+                    }
+                }
+            });
+        }
     </script>
 @endsection
