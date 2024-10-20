@@ -768,3 +768,15 @@
   bottom: 0;
   right: 0;
 }
+
+#searchBtn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 13px 20px;
+}
+
+.search_icon {
+  font-size: 30px;
+  cursor: pointer;
+}

@@ -5,6 +5,10 @@
       @include('back-end.messages.category.create')
       {{-- Modal create end --}}
 
+      {{-- Modal edit start --}}
+      @include('back-end.messages.category.edit')
+      {{-- Modal edit start --}}
+
       <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
@@ -33,10 +37,6 @@
 @endsection
 @section('scripts')
     <script>
-
-
-
-
         const UploadImage = (form) => {
             let payloads = new FormData($(form)[0]);
             $.ajax({
@@ -49,15 +49,15 @@
                 success: function (response) {
                     if(response.status == 200){
                         let img = `
-                            <input type="hidden" name="category-image" value="${response.image}">
                             <img style="width:400px;" src="{{ asset('uploads/temp/${response.image}') }}" >
                             <button type="button" onclick="CancelImage('${response.image}')" class="btn btn_cancle btn-danger rounded-0 btn-sm">cancel</button>
                         `;
 
                         $(".show-image-category").html(img);
 
-                        $(form).trigger("reset");
-                        $(selector).removeClass("is-invalid").siblings('p').removeClass("text-danger").text(" ");
+                        // $(form).trigger("reset");
+                        $(".image").val("");
+                        $(".image").removeClass("is-invalid").siblings('p').removeClass("text-danger").text(" ");
                     }else{
                         $('.image').addClass("is-invalid").siblings('p').addClass("text-danger").text(response.error.image);
                     }
@@ -83,26 +83,5 @@
                 });
             }
         }
-
-
-        const StoreCategory = (form) => {
-            let payloads = new FormData($(form)[0]);
-            $.ajax({
-                type: "POST",
-                url: "{{ route('category.store') }}",
-                data: payloads,
-                dataType: "json",
-                contentType: false,
-                processData: false,
-                success: function (response) {
-                    if(response.status == 200){
-                        Message(response.message);
-                        $("#modalCreateCategory").modal('hide');
-                        $(form).trigger('reset');
-                    }
-                }
-            });
-        }
-
     </script>
 @endsection
