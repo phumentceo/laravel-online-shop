@@ -74,7 +74,45 @@ class CategoryController extends Controller
    
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(),[
+            'name' => 'required|unique:categories,name'
+        ]);
+
+        if($validator->passes()){
+
+            //store to db
+            $category = new Category();
+            $category->name = $request->name;
+            $category->status = $request->status;
+
+            //change image directory
+            if($request->input("category_image")){
+
+                $tempDir = public_path("uploads/temp/".$request->input("category_image"));
+                $cateDir = public_path("uploads/category/".$request->input("category_image"));
+    
+                if(File::exists($tempDir)){
+                    File::copy($tempDir,$cateDir);
+                    File::delete($tempDir);
+                }
+    
+                $category->image = $request->input("category_image");
+            }
+           
+            $category->save();
+
+            return response([
+                'status' => 200,
+                'message' => "Category Created successful"
+            ]);
+
+        }else{
+
+            return response()->json([
+                'status' => 500,
+                'error' => $validator->errors(),
+            ]);
+        }
     }
 
    

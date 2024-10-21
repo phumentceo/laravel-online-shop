@@ -36,6 +36,13 @@
       </li>
 
       <li class="nav-item">
+        <a class="nav-link" href="{{ route('color.index') }}">
+          <i class="menu-icon typcn typcn-document-text"></i>
+          <span class="menu-title">Color</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
         <a class="nav-link" href="{{ route('user.index') }}">
           <i class="menu-icon typcn typcn-document-text"></i>
           <span class="menu-title">Users</span>
