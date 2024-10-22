@@ -2,31 +2,31 @@
 @section('contens')
 
       {{-- Modal create start --}}
-      @include('back-end.messages.brand.create')
+      @include('back-end.messages.color.create')
       {{-- Modal create end --}}
 
       {{-- Modal edit start --}}
-      @include('back-end.messages.brand.edit')
+      @include('back-end.messages.color.edit')
       {{-- Modal edit start --}}
 
       <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center">
-                <h3>Brands</h3>
-                <p data-bs-toggle="modal" data-bs-target="#modalCreateBrand" class="card-description btn btn-primary ">new brand</p>
+                <h3>Colors</h3>
+                <p data-bs-toggle="modal" data-bs-target="#modalCreateColor" class="card-description btn btn-primary ">new color</p>
             </div>
-            <table class="table table-striped">
+            <table class="table table-striped mb-3">
               <thead>
                 <tr> 
-                  <th>Brand ID</th>
+                  <th>Color ID</th>
                   <th>Name</th>
-                  <th>Category</th>
+                  <th>Color</th>
                   <th>Status</th>
                   <th>Action</th>
                 </tr>
               </thead>
-              <tbody class="brand_list">
+              <tbody class="colors_list">
                  {{-- <tr>
                     <td>B001</td>
                     <td>Vivo</td>
@@ -49,23 +49,21 @@
 
                 </div>
 
-                <button onclick="BrandRefresh()" class=" btn btn-outline-danger rounded-0 btn-sm">refresh</button>
+                <button onclick="ColorRefresh()" class=" btn btn-outline-danger rounded-0 btn-sm">refresh</button>
 
             </div>
           </div>
         </div>
       </div>
 @endsection
-
 @section('scripts')
 <script>
 
-
-    //Brand List
-    const BrandList = (page=1,search='') => {
+    //Color List
+    const ColorList = (page=1,search='') => {
       $.ajax({
         type: "POST",
-        url: "{{ route('brand.list') }}",
+        url: "{{ route('color.list') }}",
         data : {
             "page" : page,
             "search" : search
@@ -73,26 +71,28 @@
         dataType: "json",
         success: function (response) {
             if(response.status == 200){
-                let brands = response.brands;
+                let colors = response.colors;
                 let tr = ``;
-                $.each(brands, function (key,value) { 
+                $.each(colors, function (key,value) { 
                     tr += `
                     <tr>
                         <td>B${value.id}</td>
                         <td>${value.name}</td>
-                        <th>${value.category.name}</th>
+                        <th>
+                            <div style="background-color:${value.color_code}; height: 20px; width: 20px; border-radius:50%;border:1px solid black;"></div>
+                        </th>
                         <th>
                             ${(value.status == 1) ? '<span class="badge badge-success p-1">Active</span>' : ' <span class="badge badge-danger  p-1">Inactive</span>' }
                         </th>
                         <th>
-                            <button type="button" onclick="BrandEdit(${value.id},'${value.name}')" class=" btn btn-info  btn-sm" data-bs-toggle="modal" data-bs-target="#modalUpdateBrand">Edit</button>
-                            <button type="button" onclick="BrandDelete(${value.id})" class="btn btn-danger btn-sm">Delete</button>
+                            <button type="button" onclick="ColorEdit(${value.id},'${value.name}','${value.color_code}',${value.status})" class=" btn btn-info  btn-sm" data-bs-toggle="modal" data-bs-target="#modalUpdateColor">Edit</button>
+                            <button type="button" onclick="ColorDelete(${value.id})" class="btn btn-danger btn-sm">Delete</button>
                         </th>
                     </tr>
                     `;
                 });
 
-                $(".brand_list").html(tr);
+                $(".colors_list").html(tr);
 
                 //pagination
                 let page = ``;
@@ -109,7 +109,7 @@
 
                         for(let i=1;i<=totalPage;i++){
                             page += `
-                                <li onclick="BrandPage(${i})" class="page-item ${(i == currentPage) ? 'active' : '' }">
+                                <li onclick="ColorPage(${i})" class="page-item ${(i == currentPage) ? 'active' : '' }">
                                     <a class="page-link" href="javascript:void()">${i}</a>
                                 </li>`;
                         }
@@ -123,124 +123,140 @@
                 </nav>
                 `;
 
-                $(".show-page").html(page);
+                if(totalPage > 1 ){
+                    $(".show-page").html(page);
+                }
+
+                
             }
         }
       });
     }
 
     //Calling function
-    BrandList();
+    ColorList();
 
-    //Brand Refresh page
-    const BrandRefresh = () => {
-        BrandList();
+
+    //Color Refresh
+    const ColorRefresh = () => {
+        ColorList();
         $("#searchBox").val(" ");
     }
 
+    
+    //Color Page
+    const ColorPage = (page) => {
+        ColorList(page);
+    }
 
-    //search event 
+
+    //Previous Page
+    const NextPage  = (page) => {
+        ColorList(page + 1);
+    }
+
+
+    //Previous Page
+    const PreviousPage = (page) => {
+        ColorList(page - 1);
+    }
+
+    //Color Search with event
     $(document).on("click",'.searchBtn', function () {
          let searchValue = $("#searchBox").val();
-         BrandList(1,searchValue);
-         
+         ColorList(1,searchValue);
          //close modal
          $("#modalSearch").modal('hide');
     });
 
 
-
-    //Pagination
-    const BrandPage = (page) => {
-        BrandList(page);
+    //Color Store
+    const ColorStore = (form) => {
+       let payloads = new FormData($(form)[0]);
+       $.ajax({
+        type: "POST",
+        url: "{{ route('color.store') }}",
+        data: payloads,
+        dataType: "json",
+        contentType: false,
+        processData: false,
+        success: function (response) {
+            if(response.status == 200){
+                $("#modalCreateColor").modal("hide");
+                $(form).trigger('reset');
+                $(".name").removeClass("is-invalid").siblings("p").removeClass("text-danger").text(" ");
+                Message(response.message);
+                ColorList();
+            }else{
+                let error = response.error;
+                $(".name").addClass("is-invalid").siblings("p").addClass("text-danger").text(error.name);
+            }
+        }
+       });
     }
 
-    //Previous Page
-    const NextPage  = (page) => {
-        BrandList(page + 1);
+
+    //Color Edit
+    const ColorEdit = (id,name,color_code,status) => {
+       $(".name_edit").val(name);
+       $("#color_id").val(id);
+       $(".color_edit").val(color_code);
+
+      
+        let option = `
+            <option value="1" ${(status == 1) ? 'selected' : ''} >Active</option>
+            <option value="0" ${(status == 0) ? 'selected' : ''} >Inactive</option>
+       `;
+
+        $('.status_edit').html(option);
+
     }
 
-    //Previous Page
-    const PreviousPage = (page) => {
-        BrandList(page - 1);
+
+    //Color Update
+    const ColorUpdate = (form) => {
+    let payloads = new FormData($(form)[0]);
+       $.ajax({
+        type: "POST",
+        url: "{{ route('color.update') }}",
+        data: payloads,
+        dataType: "json",
+        contentType: false,
+        processData: false,
+        success: function (response) {
+            if(response.status == 200){
+                $("#modalUpdateColor").modal("hide");
+                $(form).trigger('reset');
+                $(".name_edit").removeClass("is-invalid").siblings("p").removeClass("text-danger").text(" ");
+                Message(response.message);
+                ColorList();
+            }else{
+                let error = response.error;
+                $(".name_edit").addClass("is-invalid").siblings("p").addClass("text-danger").text(error.name);
+            }
+        }
+       });
     }
 
 
-   //Brand Delete
-   const BrandDelete = (id) => {
+    //Color Delete
+    const ColorDelete = (id) => {
       if(confirm("Do you want to delete this ?")){
         $.ajax({
             type: "POST",
-            url: "{{ route('brand.destroy') }}",
+            url: "{{ route('color.destroy') }}",
             data: {
                 "id" : id
             },
             dataType: "json",
             success: function (response) {
                 if(response.status == 200){
-                    BrandList();
                     Message(response.message);
+                    ColorList();
                 }
             }
         });
       }
-   }
-
-   //Brand Edit
-    const BrandEdit = (id,name) => {
-       $(".name_edit").val(name);
-       $("#color_id").val(id);
     }
-
-   //Brand Update
-   const BrandUpdate = (form) => {
-    let payloads = new FormData($(form)[0]);
-       $.ajax({
-        type: "POST",
-        url: "{{ route('brand.update') }}",
-        data: payloads,
-        dataType: "json",
-        contentType: false,
-        processData: false,
-        success: function (response) {
-            if(response.status == 200){
-                $("#modalUpdateBrand").modal("hide");
-                $(form).trigger('reset');
-                $(".name").removeClass("is-invalid").siblings("p").removeClass("text-danger").text(" ");
-                Message(response.message);
-                BrandList();
-            }else{
-                let error = response.error;
-                $(".name").addClass("is-invalid").siblings("p").addClass("text-danger").text(error.name);
-            }
-        }
-       });
-   }
-
-   const BrandStore = (form) => {
-       let payloads = new FormData($(form)[0]);
-       $.ajax({
-        type: "POST",
-        url: "{{ route('brand.store') }}",
-        data: payloads,
-        dataType: "json",
-        contentType: false,
-        processData: false,
-        success: function (response) {
-            if(response.status == 200){
-                $("#modalCreateBrand").modal("hide");
-                $(form).trigger('reset');
-                $(".name").removeClass("is-invalid").siblings("p").removeClass("text-danger").text(" ");
-                Message(response.message);
-                BrandList();
-            }else{
-                let error = response.error;
-                $(".name").addClass("is-invalid").siblings("p").addClass("text-danger").text(error.name);
-            }
-        }
-       });
-   }
-
-
 </script>
 @endsection
