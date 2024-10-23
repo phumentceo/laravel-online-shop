@@ -11,7 +11,12 @@ class AuthController extends Controller
 {
     public function login(){
         if(Auth::check()){
-            return redirect()->route('category.index');
+            if(Auth::user()->role == 1){
+                return redirect()->route('dashboard.index');
+            }else{
+                return redirect()->route('category.index');
+            }
+            
         }else{
             return view('back-end.login');
         }
@@ -28,7 +33,13 @@ class AuthController extends Controller
              // Attempt to authenticate the user
              $credentials = $request->only('email', 'password');
              if(Auth::attempt($credentials)){
-                return redirect()->route('category.index')->with('success','Login success');
+
+                if(Auth::user()->role == 1){
+                    return redirect()->route('dashboard.index');
+                }elseif(Auth::user()->role == 2){
+                    return redirect()->route('category.index');
+                }
+                
              }else{
                 return redirect()->back()->with('error','Invalid Password or Email');
             }
