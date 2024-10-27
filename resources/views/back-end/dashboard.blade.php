@@ -115,7 +115,6 @@
 
 @section("scripts")
   <script>
-
     //select all users
     const UserList = () => {
       $.ajax({
@@ -123,7 +122,7 @@
         url: "{{ route('user.list') }}",
         dataType: "json",
         success: function (response) {
-           if(response.status == 200){
+            if(response.status == 200){
               let users = response.users;
               let tr = '';
               $.each(users, function (key, value) { 
@@ -140,8 +139,7 @@
                     </tr>
                   `;
               });
-              $(".users_list").html(tr);
-           }
+            }
         }
       });
     }

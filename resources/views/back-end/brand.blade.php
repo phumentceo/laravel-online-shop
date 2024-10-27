@@ -123,7 +123,10 @@
                 </nav>
                 `;
 
-                $(".show-page").html(page);
+                if(totalPage > 1 ){
+                    $(".show-page").html(page);
+                }
+
             }
         }
       });

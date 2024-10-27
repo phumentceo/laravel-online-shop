@@ -22,7 +22,6 @@ class AuthController extends Controller
         }
         
     }
-
     public function authenticate(Request $request){
           $validator = Validator::make($request->all(),[
              'email' => 'required',
@@ -32,7 +31,7 @@ class AuthController extends Controller
           if($validator->passes()){
              // Attempt to authenticate the user
              $credentials = $request->only('email', 'password');
-             if(Auth::attempt($credentials)){
+             if(Auth::attempt($credentials,$request->filled('remember'))){
 
                 if(Auth::user()->role == 1){
                     return redirect()->route('dashboard.index');
@@ -50,6 +49,8 @@ class AuthController extends Controller
 
     public function logout(){
         Auth::logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
         return redirect()->route('auth.index');
     }
 }
