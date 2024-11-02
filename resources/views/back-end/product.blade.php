@@ -69,3 +69,21 @@
         </div>
       </div>
 @endsection
+@section('scripts')
+<script>
+  const ProductUpload = (form) => {
+    let payloads = new FormData($(form)[0]);
+    $.ajax({
+      type: "POST",
+      url: "{{ route('product.uploads') }}",
+      data: payloads,
+      dataType: "json",
+      contentType: false,
+      processData: false,
+      success: function (response) {
+        
+      }
+    });
+  }
+</script>
+@endsection

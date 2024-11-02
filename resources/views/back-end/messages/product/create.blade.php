@@ -13,7 +13,7 @@
  
                         <div class="form-group"> 
                             <label for="title">Product Name</label> 
-                            <input type="text" class="title form-control" name="title" required> 
+                            <input type="text" class="title form-control" name="title"> 
                         </div> 
  
                         <div class="form-group"> 
@@ -23,18 +23,18 @@
  
                         <div class="form-group"> 
                             <label for="price">Product Price</label> 
-                            <input type="text" class="price form-control" name="price" required> 
+                            <input type="text" class="price form-control" name="price" > 
                         </div> 
  
                         <div class="form-group"> 
                             <label for="qty">Product Quantity</label> 
-                            <input type="text" class="qty form-control"  name="qty" required> 
+                            <input type="text" class="qty form-control"  name="qty"> 
                         </div> 
  
                         <div class="form-group"> 
                             <label for="">Product Image</label> 
-                            <input type="file" id="image" class="image form-control" multiple name="image[]" required> 
-                            <button type="button"  class=" btn btn-primary upload_images">Uploads</button> 
+                            <input type="file" id="image" class="image form-control" multiple name="image[]"> 
+                            <button type="button" onclick="ProductUpload('.formCreateProduct')"  class=" btn btn-primary upload_images">Uploads</button> 
                         </div>
                         
                         <div class="show-images row">

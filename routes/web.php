@@ -5,6 +5,7 @@ use App\Http\Controllers\Dashboard\BrandController;
 use App\Http\Controllers\Dashboard\CategoryController;
 use App\Http\Controllers\Dashboard\ColorController;
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\Dashboard\ImageController;
 use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\UserController;
 use App\Http\Middleware\AuthMiddlware;
@@ -82,6 +83,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post("/product/update",[ProductController::class,'update'])->name("product.update");
         Route::post("/product/destroy",[ProductController::class,'destroy'])->name("product.destroy");
 
+        //Image Routers
+        Route::post('/product/upload',[ImageController::class,'uploads'])->name('product.uploads');
     
     });
 
