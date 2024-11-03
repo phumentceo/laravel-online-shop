@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Brand;
+use App\Models\Category;
+use App\Models\Color;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -21,6 +24,21 @@ class ProductController extends Controller
     public function create()
     {
         //
+    }
+
+    public function data(){
+        $categories = Category::orderBy("id","DESC")->get();
+        $brands = Brand::orderBy("id","DESC")->get();
+        $color  = Color::orderBy("id","DESC")->get();
+
+        return response([
+            'status' => 200,
+            'data' => [
+                'categories' => $categories,
+                'brands' => $brands,
+                'colors' => $color,
+            ]
+        ]);
     }
 
     /**

@@ -33,7 +33,7 @@
  
                         <div class="form-group"> 
                             <label for="">Product Image</label> 
-                            <input type="file" id="image" class="image form-control" multiple name="image[]"> 
+                            <input type="file" id="upload_image" class="image form-control" multiple name="image[]"> 
                             <button type="button" onclick="ProductUpload('.formCreateProduct')"  class=" btn btn-primary upload_images">Uploads</button> 
                         </div>
                         
@@ -46,7 +46,8 @@
                     <div class="col-lg-4"> 
                         <div class="form-group"> 
                             <label for="">Category</label> 
-                            <select name="category"  class="category form-control"> 
+                            <select name="category"  class="category_add form-control">
+
                             </select> 
                         </div> 
                      
@@ -54,14 +55,14 @@
                     <div class="form-group"> 
                         <label for="">Brand</label> 
                        
-                        <select name="brand" id="brand" class="brand form-control"> 
+                        <select name="brand" id="brand" class="brand_add form-control"> 
                             
                         </select> 
                     </div> 
  
                     <div class="form-group"> 
                         <label for="">Color</label> 
-                        <select name="color[]" id="color" style="width : 100%" class="color form-control" multiple ="multiple"> 
+                        <select name="color[]" id="color_add" style="width : 100%" class="color_add form-control" multiple ="multiple"> 
                       
                         </select> 
                     </div> 

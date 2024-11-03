@@ -14,7 +14,7 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center">
                 <h3>Products</h3>
-                <p data-bs-toggle="modal" data-bs-target="#modalCreateProduct" class="card-description btn btn-primary ">new product</p>
+                <p onclick="handleClickOnButtonNewProduct()" data-bs-toggle="modal" data-bs-target="#modalCreateProduct" class="card-description btn btn-primary ">new product</p>
             </div>
             <table class="table table-striped mb-3">
               <thead>
@@ -71,6 +71,69 @@
 @endsection
 @section('scripts')
 <script>
+
+  $(document).ready(function () {
+      $('#color_add').select2({  
+          placeholder: 'Select options',  
+          allowClear: true,  
+          tags: true, 
+      }); 
+  });
+
+
+  const handleClickOnButtonNewProduct = () => {
+     $.ajax({
+      type: "POST",
+      url: "{{ route('product.data') }}",
+      dataType: "json",
+      success: function (response) {
+        if(response.status == 200){
+
+            //Categories start
+            let categories = response.data.categories;
+            let cate_option = ``;
+            $.each(categories, function (key, value) { 
+              cate_option += `
+                 <option value="${value.id}">${value.name}</option>
+              `;
+            });
+
+            $('.category_add').html(cate_option);
+            //Categories end
+
+            //Brands Start
+            let brands = response.data.brands;
+            let brand_option = ``;
+            $.each(brands, function (key, value) { 
+              brand_option += `
+                 <option value="${value.id}">${value.name}</option>
+              `;
+            }); 
+            $('.brand_add').html(brand_option);
+            //Brands end
+
+            //Colors Start
+            let colors = response.data.colors;
+            let color_option = ``;
+            $.each(colors, function (key, value) { 
+              color_option += `
+                 <option value="${value.id}">${value.name}</option>
+              `;
+            }); 
+
+            $('.color_add').html(color_option);
+
+
+            
+
+
+            //Colors end
+        }
+      }
+     });
+  }
+
+
   const ProductUpload = (form) => {
     let payloads = new FormData($(form)[0]);
     $.ajax({
@@ -81,9 +144,57 @@
       contentType: false,
       processData: false,
       success: function (response) {
-        
+         if(response.status == 200){
+             Message(response.message);
+
+             let images = response.images;
+             let img = ``;
+             $.each(images, function (key, value) { 
+                  img = `
+                    <div class="col-lg-4 col-md-6 col-12 mb-3">
+                        <input type="hidden" name="images[]" value="${value}">
+                        <img class="w-100" src="{{ asset('uploads/temp/${value}') }}">
+                        <button onclick="ProductCancelImage(this,'${value}')" type="button" class="btn btn-danger btn-sm ">cancel</button>
+                    </div>
+                  `;
+
+                $('.show-images').append(img);
+
+             });
+
+             $('#upload_image').val("");
+
+
+             
+             
+         }
       }
     });
   }
+
+  const ProductCancelImage = (e,image) => {
+
+    if(confirm("Do you want to cancel ?")){
+      $.ajax({
+        type: "POST",
+        url: "{{ route('product.cancel') }}",
+        data: {
+          "image" : image
+        },
+        dataType: "json",
+        success: function (response) {
+          if(response.status == 200){
+            
+            Message(response.message);
+            $(e).parent().remove();
+            
+          }
+        }
+      });
+    }
+    
+  }
+
+
 </script>
 @endsection

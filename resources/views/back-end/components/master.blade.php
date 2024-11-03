@@ -26,6 +26,9 @@
     <!-- Toastify messages -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
+    {{-- Select 2 --}}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
   </head>
   <body>
     <div class="container-scroller">
@@ -106,6 +109,9 @@
 
     <!-- Toastify messages -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    {{-- Select 2 script --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script> 
 
     <script>
       $.ajaxSetup({
