@@ -12,8 +12,9 @@
                     <div class="col-lg-8"> 
  
                         <div class="form-group"> 
-                            <label for="title">Product Name</label> 
-                            <input type="text" class="title form-control" name="title"> 
+                            <label for="title">Product Title</label> 
+                            <input type="text" class="title_add form-control" name="title">
+                            <p></p> 
                         </div> 
  
                         <div class="form-group"> 
@@ -23,12 +24,14 @@
  
                         <div class="form-group"> 
                             <label for="price">Product Price</label> 
-                            <input type="text" class="price form-control" name="price" > 
+                            <input type="text" class="price_add form-control" name="price" > 
+                            <p></p>
                         </div> 
  
                         <div class="form-group"> 
                             <label for="qty">Product Quantity</label> 
-                            <input type="text" class="qty form-control"  name="qty"> 
+                            <input type="text" class="qty_add form-control"  name="qty"> 
+                            <p></p>
                         </div> 
  
                         <div class="form-group"> 
@@ -92,7 +95,7 @@
         </div> 
         <div class="modal-footer"> 
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> 
-          <button type="button" class="btn btn-primary">Save</button> 
+          <button onclick="ProductStore('.formCreateProduct')" type="button" class="btn btn-primary">Save</button> 
         </div> 
       </div> 
     </div> 

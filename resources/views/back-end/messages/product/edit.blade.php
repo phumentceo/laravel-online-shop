@@ -37,7 +37,7 @@
                             <button type="button"  class=" btn btn-primary upload_images">Uploads</button> 
                         </div>
                         
-                        <div class="show-images row">
+                        <div class="show-images-edit row">
                           
                         </div>
      
@@ -46,7 +46,7 @@
                     <div class="col-lg-4"> 
                         <div class="form-group"> 
                             <label for="">Category</label> 
-                            <select name="category"  class="category form-control"> 
+                            <select name="category"  class="category_edit form-control"> 
                             </select> 
                         </div> 
                      
@@ -54,14 +54,14 @@
                     <div class="form-group"> 
                         <label for="">Brand</label> 
                        
-                        <select name="brand" id="brand" class="brand form-control"> 
+                        <select name="brand" id="brand" class="brand_edit form-control"> 
                             
                         </select> 
                     </div> 
  
                     <div class="form-group"> 
                         <label for="">Color</label> 
-                        <select name="color[]" id="color" style="width : 100%" class="color form-control" multiple ="multiple"> 
+                        <select name="color[]" id="color_edit" style="width : 100%" class="color_edit form-control" multiple ="multiple"> 
                       
                         </select> 
                     </div> 

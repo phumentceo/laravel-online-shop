@@ -31,28 +31,8 @@
                   <th>Action</th>
                 </tr>
               </thead>
-              <tbody class="colors_list">
-                 <tr>
-                    <td>P001</td>
-                    <td>image.jpg</td>
-                    <td>I phone 13 promax</td>
-                    <td>Phone</td>
-                    <td>Apple</td>
-                    <td>$450</td>
-                    <td>10</td>
-                    <td>
-                        <span class="badge badge-success p-1">In Stock</span>
-                        <span class="badge badge-warning  p-1">Low Stock</span>
-                    </td>
-                    <th>
-                        <span class="badge badge-success p-1">Active</span>
-                        <span class="badge badge-danger  p-1">Inactive</span>
-                    </th>
-                    <td>
-                        <button type="button" class=" btn btn-info  btn-sm" data-bs-toggle="modal" data-bs-target="#modalUpdateProduct">Edit</button>
-                        <button type="button" class="btn btn-danger btn-sm">Delete</button>
-                    </td>
-                 </tr>
+              <tbody class="products_list">
+                 
               </tbody>
 
             </table>
@@ -73,13 +53,67 @@
 <script>
 
   $(document).ready(function () {
+
       $('#color_add').select2({  
+          placeholder: 'Select options',  
+          allowClear: true,  
+          tags: true, 
+      }); 
+
+      $('#color_edit').select2({  
           placeholder: 'Select options',  
           allowClear: true,  
           tags: true, 
       }); 
   });
 
+
+  const ProductList = () => {
+    $.ajax({
+      type: "POST",
+      url: "{{ route('product.list') }}",
+      dataType: "json",
+      success: function (response) {
+        if(response.status == 200){
+          let products = response.products;
+          let tr = '';
+          $.each(products, function (key, value) {
+            tr += `
+                <tr>
+                    <td>P${value.id}</td>
+                    <td>
+                       <img src='{{ asset('uploads/product/${value.images[0].image}') }}'/>
+                    </td>
+                    <td>${value.name}</td>
+                    <td>${value.categories.name}</td>
+                    <td>${value.brands.name}</td>
+                    <td>$${value.price}</td>
+                    <td>${value.qty}</td>
+                    <td>
+                       <span class='p-1 badge ${value.qty > 1 ? 'badge-success' : 'badge-danger'}'>
+                         ${value.qty > 1? 'In Stock' : 'Out Stock' }
+                       </span> 
+                   </td>
+                    <td>
+                        <span class="badge ${(value.status == 1)  ? 'badge-success' : 'badge-danger' }  p-1">
+                          ${(value.status == 1) ? 'Active' : 'Inactive' }
+                        </span>
+                    </td>
+                    <td>
+                        <button onclick="edit(${value.id})" type="button" class=" btn btn-info  btn-sm" data-bs-toggle="modal" data-bs-target="#modalUpdateProduct">Edit</button>
+                        <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                    </td>
+                </tr>
+            `;
+          })
+
+          $(".products_list").html(tr);
+        }
+      }
+    });
+  }
+
+  ProductList();
 
   const handleClickOnButtonNewProduct = () => {
      $.ajax({
@@ -152,7 +186,7 @@
              $.each(images, function (key, value) { 
                   img = `
                     <div class="col-lg-4 col-md-6 col-12 mb-3">
-                        <input type="hidden" name="images[]" value="${value}">
+                        <input type="hidden" name="image_uploads[]" value="${value}">
                         <img class="w-100" src="{{ asset('uploads/temp/${value}') }}">
                         <button onclick="ProductCancelImage(this,'${value}')" type="button" class="btn btn-danger btn-sm ">cancel</button>
                     </div>
@@ -193,6 +227,136 @@
       });
     }
     
+  }
+
+  const ProductStore = (form) => {
+    let payloads = new FormData($(form)[0]);
+
+    $.ajax({
+      type: "POST",
+      url: "{{ route('product.store') }}",
+      data: payloads,
+      dataType: "json",
+      contentType: false,
+      processData: false,
+      success: function (response) {
+         if(response.status == 200){
+          $(form).trigger("reset");
+          $('.show-images').html(" ");
+          $("#modalCreateProduct").modal('hide');
+          $('input').removeClass("is-invalid").siblings("p").removeClass('text-danger').text(" ")
+          Message(response.message);
+          
+         }else{ 
+            Message(response.message,false);
+
+            if(response.errors.title){
+              $('.title_add').addClass("is-invalid").siblings("p").addClass('text-danger').text(response.errors.title)
+            }else{
+              $('.title_add').removeClass("is-invalid").siblings("p").removeClass('text-danger').text("")
+            }
+
+            if(response.errors.price){
+              $('.price_add').addClass("is-invalid").siblings("p").addClass('text-danger').text(response.errors.price)
+            }else{
+              $('.price_add').removeClass("is-invalid").siblings("p").removeClass('text-danger').text("")
+
+            }
+
+            if(response.errors.qty){
+              $('.qty_add').addClass("is-invalid").siblings("p").addClass('text-danger').text(response.errors.qty)
+            }else{
+              $('.qty_add').removeClass("is-invalid").siblings("p").removeClass('text-danger').text("")
+            }
+         }
+      }
+    });
+  }
+
+
+  const edit = (id) => {
+       $.ajax({
+        type: "POST",
+        url: "{{ route('product.edit') }}",
+        data: {
+          'id' : id
+        },
+        dataType: "json",
+        success: function (response) {
+          if(response.status == 200){
+             
+            //categories start
+            let categories = response.data.categories;
+            let cate_option = ``;
+            $.each(categories, function (key, value) { 
+              cate_option += `
+              <option value="${value.id}" ${(value.id == response.data.product.category_id) ? 'selected' : ''}>
+                ${value.name}
+              </option>
+              `;
+            });
+
+            //inner to category edit 
+            $('.category_edit').html(cate_option);
+            //categories end
+          }
+
+          //brands start
+          let brands = response.data.brands;
+          let brand_option = ``;
+          $.each(brands, function (key, value) { 
+              brand_option += `
+              <option value="${value.id}" ${(value.id == response.data.product.brand_id)? 'selected' : ''}>
+                ${value.name}
+              </option>
+              `;
+          }); 
+          //inner to brand edit 
+          $('.brand_edit').html(brand_option);
+          //brands end
+
+
+          //colors start
+          let colors = response.data.colors;
+          let color_ids = response.data.product.color; // 4,2,1
+         
+          //let find  = array.includes(5)  // => true or false => 1
+          let color_option = ``;
+          $.each(colors, function (key, value) { 
+              if(color_ids.includes(String(value.id))){
+                color_option += `
+                   <option value="${value.id}" selected >${value.name}</option>
+                `;
+              }else{
+                color_option += `
+                  <option value="${value.id}">${value.name}</option>
+                `;
+              }
+          }); 
+          //inner to color edit 
+          $('.color_edit').html(color_option);
+          //colors end
+
+
+          //Images start
+          let images = response.data.productImages;
+          let img = ``;
+          $.each(images, function (key, value) { 
+               img = `
+                 <div class="col-lg-4 col-md-6 col-12 mb-3">
+                     <input type="hidden" name="image_uploads[]" value="${value.image}">
+                     <img class="w-100" src="{{ asset('uploads/product/${value.image}') }}">
+                     <button onclick="ProductCancelImage(this,'${value.image}')" type="button" class="btn btn-danger btn-sm ">cancel</button>
+                 </div>
+               `
+             $('.show-images-edit').append(img)
+          });
+
+          //Images end
+
+
+        }
+       });
   }
 
 
