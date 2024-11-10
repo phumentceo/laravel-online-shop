@@ -82,7 +82,11 @@
                 <tr>
                     <td>P${value.id}</td>
                     <td>
-                       <img src='{{ asset('uploads/product/${value.images[0].image}') }}'/>
+                       `;
+                       if(value.images.length > 0){
+                         tr += `<img  src='{{ asset('uploads/product/${value.images[0].image}') }}'/>`;
+                       }
+                    tr += ` 
                     </td>
                     <td>${value.name}</td>
                     <td>${value.categories.name}</td>
@@ -192,14 +196,18 @@
                     </div>
                   `;
 
-                $('.show-images').append(img);
+                if(form === '.formUpdateProduct'){
+                   $('.show-images-edit').append(img);
+                }else if(form === '.formCreateProduct'){
+                   $('.show-images').append(img);
+                }
+
+                
 
              });
 
-             $('#upload_image').val("");
+             $('.image').val("");
 
-
-             
              
          }
       }
@@ -275,6 +283,7 @@
 
 
   const edit = (id) => {
+       $(".show-images-edit").html(" ");
        $.ajax({
         type: "POST",
         url: "{{ route('product.edit') }}",
@@ -285,6 +294,15 @@
         success: function (response) {
           if(response.status == 200){
              
+            //assign id input id feild
+            $("#product_id").val(response.data.product.id);
+
+            //product 
+            $(".title_edit").val(response.data.product.name);
+            $(".price_edit").val(response.data.product.price);
+            $(".qty_edit").val(response.data.product.qty);
+            $(".desc_edit").val(response.data.product.desc);
+
             //categories start
             let categories = response.data.categories;
             let cate_option = ``;
@@ -344,7 +362,7 @@
           $.each(images, function (key, value) { 
                img = `
                  <div class="col-lg-4 col-md-6 col-12 mb-3">
-                     <input type="hidden" name="image_uploads[]" value="${value.image}">
+                     <input type="text" name="old_image" value="${value.image}">
                      <img class="w-100" src="{{ asset('uploads/product/${value.image}') }}">
                      <button onclick="ProductCancelImage(this,'${value.image}')" type="button" class="btn btn-danger btn-sm ">cancel</button>
                  </div>
@@ -357,6 +375,51 @@
 
         }
        });
+  }
+
+  const ProductUpdate = (form) => {
+    let payloads = new FormData($(form)[0]);
+
+    $.ajax({
+      type: "POST",
+      url: "{{ route('product.update') }}",
+      data: payloads,
+      dataType: "json",
+      contentType: false,
+      processData: false,
+      success: function (response) {
+          if(response.status == 200){
+            $(form).trigger("reset");
+            $('.show-images-edit').html(" ");
+            $("#modalUpdateProduct").modal('hide');
+            $('input').removeClass("is-invalid").siblings("p").removeClass('text-danger').text(" ")
+            Message(response.message);
+            ProductList();
+          }else{
+            Message(response.message,false);
+
+            if(response.errors.title){
+              $('.title_edit').addClass("is-invalid").siblings("p").addClass('text-danger').text(response.errors.title)
+            }else{
+              $('.title_edit').removeClass("is-invalid").siblings("p").removeClass('text-danger').text("")
+            }
+
+            if(response.errors.price){
+              $('.price_edit').addClass("is-invalid").siblings("p").addClass('text-danger').text(response.errors.price)
+            }else{
+              $('.price_edit').removeClass("is-invalid").siblings("p").removeClass('text-danger').text("")
+
+            }
+
+            if(response.errors.qty){
+              $('.qty_edit').addClass("is-invalid").siblings("p").addClass('text-danger').text(response.errors.qty)
+            }else{
+              $('.qty_edit').removeClass("is-invalid").siblings("p").removeClass('text-danger').text("")
+            }
+          }
+      }
+    });
+
   }
 
 
