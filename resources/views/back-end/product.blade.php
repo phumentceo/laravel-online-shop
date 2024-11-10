@@ -42,7 +42,7 @@
 
                 </div>
 
-                <button onclick="" class=" btn btn-outline-danger rounded-0 btn-sm">refresh</button>
+                <button onclick="ProductRefresh()" class=" btn btn-outline-danger rounded-0 btn-sm">refresh</button>
 
             </div>
           </div>
@@ -68,10 +68,13 @@
   });
 
 
-  const ProductList = () => {
+  const ProductList = (search=null) => {
     $.ajax({
       type: "POST",
       url: "{{ route('product.list') }}",
+      data : {
+        'search' : search
+      },
       dataType: "json",
       success: function (response) {
         if(response.status == 200){
@@ -118,6 +121,16 @@
   }
 
   ProductList();
+
+
+  //search event 
+  $(document).on("click",'.searchBtn', function () {
+         let searchValue = $("#searchBox").val();
+         ProductList(searchValue);
+         
+         //close modal
+         $("#modalSearch").modal('hide');
+    });
 
   const handleClickOnButtonNewProduct = () => {
      $.ajax({
@@ -170,6 +183,12 @@
       }
      });
   }
+
+   //Brand Refresh page
+   const ProductRefresh = () => {
+        ProductList();
+        $("#searchBox").val(" ");
+    }
 
 
   const ProductUpload = (form) => {

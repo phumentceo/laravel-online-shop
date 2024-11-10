@@ -23,8 +23,21 @@ class ProductController extends Controller
         return view('back-end.product');
     }
 
-    public function list(){
-        $products = Products::orderBy("id","DESC")->with(['Images','Categories','Brands'])->get();
+    public function list(Request $request){
+        if($request->search != null){
+            $products = Products::with(['Images','Categories','Brands'])
+                       ->where('name','like','%'.$request->search.'%')
+                       ->orWhereHas('Categories',function($feild) use ($request) {
+                           $feild->where('name','like','%'.$request->search.'%');
+                       })
+                       ->orWhereHas('Brands',function($feild) use ($request) {
+                           $feild->where('name','like','%'.$request->search.'%');
+                       })
+                       ->get();
+        }else{
+            $products = Products::orderBy("id","DESC")->with(['Images','Categories','Brands'])->get();
+        }
+        
         return response([
             'status' => 200,
             'products' => $products
