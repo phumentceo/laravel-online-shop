@@ -24,6 +24,14 @@ class ProductController extends Controller
     }
 
     public function list(Request $request){
+
+        $limit = 10;
+
+        $page  = $request->page;
+
+        $offset = ($page - 1) * $limit;
+
+
         if($request->search != null){
             $products = Products::with(['Images','Categories','Brands'])
                        ->where('name','like','%'.$request->search.'%')
@@ -33,13 +41,32 @@ class ProductController extends Controller
                        ->orWhereHas('Brands',function($feild) use ($request) {
                            $feild->where('name','like','%'.$request->search.'%');
                        })
+                       ->limit($limit)
+                       ->offset($offset)
                        ->get();
+            
+           #Total Record
+           $totalRecord = Products::where('name','like','%'.$request->search.'%')->count();   
+
         }else{
-            $products = Products::orderBy("id","DESC")->with(['Images','Categories','Brands'])->get();
+            $products = Products::orderBy("id","DESC")->with(['Images','Categories','Brands'])
+                                 ->limit($limit)
+                                 ->offset($offset)
+                                 ->get();
+
+            #Total Record
+            $totalRecord = Products::count();
         }
+
+        $totalPage   = ceil($totalRecord / $limit);
         
         return response([
             'status' => 200,
+            'page' => [
+                'totalRecord' => $totalRecord,
+                'totalPage'  => $totalPage,
+                'currentPage' => $page
+            ],
             'products' => $products
         ]);
     }
@@ -222,11 +249,26 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+
+    public function destroy(Request $request)
     {
-        //
+        
+        #Delete image from folder
+        $productImages = ProductImage::where('product_id',$request->id)->get();
+
+        if($productImages != null){
+            foreach($productImages as $image){
+                File::delete(public_path("uploads/product/$image->image"));
+            }
+        }
+
+        #Delete product from db
+        Products::find($request->id)->delete();
+
+        return response([
+            'status' => 200,
+            'message' => 'Product deleted successful'
+        ]);
+
     }
 }

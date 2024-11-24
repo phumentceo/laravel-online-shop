@@ -16,26 +16,29 @@
                 <h3>Products</h3>
                 <p onclick="handleClickOnButtonNewProduct()" data-bs-toggle="modal" data-bs-target="#modalCreateProduct" class="card-description btn btn-primary ">new product</p>
             </div>
-            <table class="table table-striped mb-3">
-              <thead>
-                <tr> 
-                  <th>Product ID</th>
-                  <th>Product Image</th>
-                  <th>Product Name</th>
-                  <th>Category</th>
-                  <th>Brand</th>
-                  <th>Price</th>
-                  <th>Qty</th>
-                  <th>Stock</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody class="products_list">
-                 
-              </tbody>
-
-            </table>
+            <div class="table-responsive">
+              <table class="table table-striped mb-3">
+                <thead>
+                  <tr> 
+                    <th>Product ID</th>
+                    <th>Product Image</th>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Brand</th>
+                    <th>Price</th>
+                    <th>Qty</th>
+                    <th>Stock</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody class="products_list">
+                   
+                </tbody>
+  
+              </table>
+            </div>
+            
             <div class="d-flex justify-content-between align-items-center">
 
                 <div class="show-page mt-3">
@@ -68,11 +71,13 @@
   });
 
 
-  const ProductList = (search=null) => {
+  // Product Rendering
+  const ProductList = (page=1,search=null) => {
     $.ajax({
       type: "POST",
       url: "{{ route('product.list') }}",
       data : {
+        'page'   : page,
         'search' : search
       },
       dataType: "json",
@@ -108,13 +113,51 @@
                     </td>
                     <td>
                         <button onclick="edit(${value.id})" type="button" class=" btn btn-info  btn-sm" data-bs-toggle="modal" data-bs-target="#modalUpdateProduct">Edit</button>
-                        <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                        <button onclick="ProductDelete(${value.id})" type="button" class="btn btn-danger btn-sm">Delete</button>
                     </td>
                 </tr>
             `;
           })
 
           $(".products_list").html(tr);
+
+
+
+           //pagination
+           let page = ``;
+                let totalPage = response.page.totalPage;
+                let currentPage = response.page.currentPage;
+                page = `
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <li onclick="PreviousPage(${currentPage})" class="page-item ${(currentPage == 1) ? 'd-none' : 'd-block' }">
+                        <a class="page-link" href="javascript:void()" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                        </li>`;
+
+                        for(let i=1;i<=totalPage;i++){
+                            page += `
+                                <li onclick="ProductPage(${i})" class="page-item ${(i == currentPage) ? 'active' : '' }">
+                                    <a class="page-link" href="javascript:void()">${i}</a>
+                                </li>`;
+                        }
+
+                        page +=`<li onclick="NextPage(${currentPage})" class="page-item ${( currentPage == totalPage ) ? 'd-none' : 'd-block'}">
+                        <a class="page-link" href="javascript:void()" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                        </li>
+                    </ul>
+                </nav>
+                `;
+
+                if(totalPage > 1 ){
+                    $(".show-page").html(page);
+                }
+
+
+
         }
       }
     });
@@ -126,7 +169,7 @@
   //search event 
   $(document).on("click",'.searchBtn', function () {
          let searchValue = $("#searchBox").val();
-         ProductList(searchValue);
+         ProductList(1,searchValue);
          
          //close modal
          $("#modalSearch").modal('hide');
@@ -191,7 +234,26 @@
     }
 
 
-  const ProductUpload = (form) => {
+    //Color Page
+    const ProductPage = (page) => {
+        ProductList(page);
+    }
+
+
+    //Next Page
+    const NextPage  = (page) => {
+        ProductList(page + 1);
+    }
+
+
+    //Previous Page
+    const PreviousPage = (page) => {
+        ProductList(page - 1);
+    }
+
+
+ 
+    const ProductUpload = (form) => {
     let payloads = new FormData($(form)[0]);
     $.ajax({
       type: "POST",
@@ -273,6 +335,7 @@
           $("#modalCreateProduct").modal('hide');
           $('input').removeClass("is-invalid").siblings("p").removeClass('text-danger').text(" ")
           Message(response.message);
+          ProductList();
           
          }else{ 
             Message(response.message,false);
@@ -439,6 +502,30 @@
       }
     });
 
+  }
+
+
+  //Product delete 
+  const ProductDelete = (id) => {
+    if(confirm("Do you want to delete the product?")){
+      $.ajax({
+        type: "POST",
+        url: "{{ route('product.destroy') }}",
+        data: {
+          "id" : id
+        },
+        dataType: "json",
+        success: function (response) {
+          if(response.status == 200){
+            Message(response.message);
+
+            //Rendering product list
+            ProductList();
+            
+          }
+        }
+      });
+    }
   }
 
 

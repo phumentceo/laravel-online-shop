@@ -151,7 +151,7 @@
     }
 
 
-    //Previous Page
+    //Next Page
     const NextPage  = (page) => {
         ColorList(page + 1);
     }
