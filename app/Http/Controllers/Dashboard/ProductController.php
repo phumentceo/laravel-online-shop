@@ -45,8 +45,20 @@ class ProductController extends Controller
                        ->offset($offset)
                        ->get();
             
-           #Total Record
-           $totalRecord = Products::where('name','like','%'.$request->search.'%')->count();   
+
+            #Total Record
+            $totalRecord = Products::with(['Images','Categories','Brands'])
+                       ->where('name','like','%'.$request->search.'%')
+                       ->orWhereHas('Categories',function($feild) use ($request) {
+                           $feild->where('name','like','%'.$request->search.'%');
+                       })
+                       ->orWhereHas('Brands',function($feild) use ($request) {
+                           $feild->where('name','like','%'.$request->search.'%');
+                       })
+                       ->count();
+            
+           
+             
 
         }else{
             $products = Products::orderBy("id","DESC")->with(['Images','Categories','Brands'])

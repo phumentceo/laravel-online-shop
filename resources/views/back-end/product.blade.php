@@ -154,6 +154,8 @@
 
                 if(totalPage > 1 ){
                     $(".show-page").html(page);
+                }else{
+                    $('.show-page').html('');
                 }
 
 
