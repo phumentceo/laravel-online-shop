@@ -102,12 +102,12 @@
                     <td>$${value.price}</td>
                     <td>${value.qty}</td>
                     <td>
-                       <span class='p-1 badge ${value.qty > 1 ? 'badge-success' : 'badge-danger'}'>
+                       <span class='text-light p-1 badge ${value.qty > 1 ? 'badge-success' : 'badge-danger'}'>
                          ${value.qty > 1? 'In Stock' : 'Out Stock' }
                        </span> 
                    </td>
                     <td>
-                        <span class="badge ${(value.status == 1)  ? 'badge-success' : 'badge-danger' }  p-1">
+                        <span class="text-light badge ${(value.status == 1)  ? 'badge-success' : 'badge-danger' }  p-1">
                           ${(value.status == 1) ? 'Active' : 'Inactive' }
                         </span>
                     </td>
@@ -138,7 +138,7 @@
 
                         for(let i=1;i<=totalPage;i++){
                             page += `
-                                <li onclick="ProductPage(${i})" class="page-item ${(i == currentPage) ? 'active' : '' }">
+                                <li onclick="ProductPage(${i})" class="shadow-none page-item ${(i == currentPage) ? 'active' : '' }">
                                     <a class="page-link" href="javascript:void()">${i}</a>
                                 </li>`;
                         }
