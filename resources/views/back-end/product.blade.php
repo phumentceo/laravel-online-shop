@@ -1,100 +1,146 @@
 @extends('back-end.components.master')
+@section('styles')
+    <style>
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1050;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.3s ease-in-out;
+        }
+
+        #loadingOverlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        #loadingOverlay .spinner-border {
+            color: white;
+        }
+    </style>
+@endsection
 @section('contens')
+    {{-- Modal create start --}}
+    @include('back-end.messages.product.create')
+    {{-- Modal create end --}}
 
-      {{-- Modal create start --}}
-      @include('back-end.messages.product.create')
-      {{-- Modal create end --}}
+    {{-- Modal edit start --}}
+    @include('back-end.messages.product.edit')
+    {{-- Modal edit start --}}
 
-      {{-- Modal edit start --}}
-      @include('back-end.messages.product.edit')
-      {{-- Modal edit start --}}
+    {{-- Loading Page --}}
+    <div id="loadingOverlay">
+      <div class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
 
-      <div class="col-lg-12 grid-margin stretch-card">
+
+    <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center">
-                <h3>Products</h3>
-                <p onclick="handleClickOnButtonNewProduct()" data-bs-toggle="modal" data-bs-target="#modalCreateProduct" class="card-description btn btn-primary ">new product</p>
-            </div>
-            <div class="table-responsive">
-              <table class="table table-striped mb-3">
-                <thead>
-                  <tr> 
-                    <th>Product ID</th>
-                    <th>Product Image</th>
-                    <th>Product Name</th>
-                    <th>Category</th>
-                    <th>Brand</th>
-                    <th>Price</th>
-                    <th>Qty</th>
-                    <th>Stock</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody class="products_list">
-                   
-                </tbody>
-  
-              </table>
-            </div>
-            
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3>Products</h3>
+                    <p onclick="handleClickOnButtonNewProduct()" data-bs-toggle="modal" data-bs-target="#modalCreateProduct"
+                        class="card-description btn btn-primary ">new product</p>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped mb-3">
+                        <thead>
+                            <tr>
+                                <th>Product ID</th>
+                                <th>Product Image</th>
+                                <th>Product Name</th>
+                                <th>Category</th>
+                                <th>Brand</th>
+                                <th>Price</th>
+                                <th>Qty</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="products_list">
 
-                <div class="show-page mt-3">
+                        </tbody>
 
+                    </table>
                 </div>
 
-                <button onclick="ProductRefresh()" class=" btn btn-outline-danger rounded-0 btn-sm">refresh</button>
+                <div class="d-flex justify-content-between align-items-center">
 
+                    <div class="show-page mt-3">
+
+                    </div>
+
+                    <button onclick="ProductRefresh()" class=" btn btn-outline-danger rounded-0 btn-sm">refresh</button>
+
+                </div>
             </div>
-          </div>
         </div>
-      </div>
+    </div>
 @endsection
 @section('scripts')
-<script>
+    <script>
+        $(document).ready(function() {
 
-  $(document).ready(function () {
+            $('#color_add').select2({
+                placeholder: 'Select options',
+                allowClear: true,
+                tags: true,
+            });
 
-      $('#color_add').select2({  
-          placeholder: 'Select options',  
-          allowClear: true,  
-          tags: true, 
-      }); 
+            $('#color_edit').select2({
+                placeholder: 'Select options',
+                allowClear: true,
+                tags: true,
+            });
+        });
 
-      $('#color_edit').select2({  
-          placeholder: 'Select options',  
-          allowClear: true,  
-          tags: true, 
-      }); 
-  });
+        const showLoader = () => {
+            document.getElementById("loadingOverlay").classList.add("active");
+        };
+
+        const hideLoader = () => {
+            document.getElementById("loadingOverlay").classList.remove("active");
+        };
 
 
-  // Product Rendering
-  const ProductList = (page=1,search=null) => {
-    $.ajax({
-      type: "POST",
-      url: "{{ route('product.list') }}",
-      data : {
-        'page'   : page,
-        'search' : search
-      },
-      dataType: "json",
-      success: function (response) {
-        if(response.status == 200){
-          let products = response.products;
-          let tr = '';
-          $.each(products, function (key, value) {
-            tr += `
+        // Product Rendering
+        const ProductList = (page = 1, search = null) => {
+            showLoader();
+            try{
+            $.ajax({
+                type: "POST",
+                url: "{{ route('product.list') }}",
+                data: {
+                    'page': page,
+                    'search': search
+                },
+                dataType: "json",
+                success: function(response) {
+                    if (response.status == 200) {
+                        let products = response.products;
+                        let tr = '';
+                        $.each(products, function(key, value) {
+                            tr += `
                 <tr>
                     <td>P${value.id}</td>
                     <td>
                        `;
-                       if(value.images.length > 0){
-                         tr += `<img  src='{{ asset('uploads/product/${value.images[0].image}') }}'/>`;
-                       }
-                    tr += ` 
+                            if (value.images.length > 0) {
+                                tr +=
+                                    `<img  src='{{ asset('uploads/product/${value.images[0].image}') }}'/>`;
+                            }
+                            tr += ` 
                     </td>
                     <td>${value.name}</td>
                     <td>${value.categories.name}</td>
@@ -117,17 +163,15 @@
                     </td>
                 </tr>
             `;
-          })
+                        })
 
-          $(".products_list").html(tr);
+                        $(".products_list").html(tr);
 
-
-
-           //pagination
-           let page = ``;
-                let totalPage = response.page.totalPage;
-                let currentPage = response.page.currentPage;
-                page = `
+                        //pagination
+                        let page = ``;
+                        let totalPage = response.page.totalPage;
+                        let currentPage = response.page.currentPage;
+                        page = `
                 <nav aria-label="Page navigation example">
                     <ul class="pagination">
                         <li onclick="PreviousPage(${currentPage})" class="page-item ${(currentPage == 1) ? 'd-none' : 'd-block' }">
@@ -136,14 +180,14 @@
                         </a>
                         </li>`;
 
-                        for(let i=1;i<=totalPage;i++){
+                        for (let i = 1; i <= totalPage; i++) {
                             page += `
                                 <li onclick="ProductPage(${i})" class="shadow-none page-item ${(i == currentPage) ? 'active' : '' }">
                                     <a class="page-link" href="javascript:void()">${i}</a>
                                 </li>`;
                         }
 
-                        page +=`<li onclick="NextPage(${currentPage})" class="page-item ${( currentPage == totalPage ) ? 'd-none' : 'd-block'}">
+                        page += `<li onclick="NextPage(${currentPage})" class="page-item ${( currentPage == totalPage ) ? 'd-none' : 'd-block'}">
                         <a class="page-link" href="javascript:void()" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
@@ -152,126 +196,131 @@
                 </nav>
                 `;
 
-                if(totalPage > 1 ){
-                    $(".show-page").html(page);
-                }else{
-                    $('.show-page').html('');
+                        if (totalPage > 1) {
+                            $(".show-page").html(page);
+                        } else {
+                            $('.show-page').html('');
+                        }
+
+
+
+                    }
                 }
-
-
-
-        }
-      }
-    });
-  }
-
-  ProductList();
-
-
-  //search event 
-  $(document).on("click",'.searchBtn', function () {
-         let searchValue = $("#searchBox").val();
-         ProductList(1,searchValue);
-         
-         //close modal
-         $("#modalSearch").modal('hide');
-    });
-
-  const handleClickOnButtonNewProduct = () => {
-     $.ajax({
-      type: "POST",
-      url: "{{ route('product.data') }}",
-      dataType: "json",
-      success: function (response) {
-        if(response.status == 200){
-
-            //Categories start
-            let categories = response.data.categories;
-            let cate_option = ``;
-            $.each(categories, function (key, value) { 
-              cate_option += `
-                 <option value="${value.id}">${value.name}</option>
-              `;
             });
-
-            $('.category_add').html(cate_option);
-            //Categories end
-
-            //Brands Start
-            let brands = response.data.brands;
-            let brand_option = ``;
-            $.each(brands, function (key, value) { 
-              brand_option += `
-                 <option value="${value.id}">${value.name}</option>
-              `;
-            }); 
-            $('.brand_add').html(brand_option);
-            //Brands end
-
-            //Colors Start
-            let colors = response.data.colors;
-            let color_option = ``;
-            $.each(colors, function (key, value) { 
-              color_option += `
-                 <option value="${value.id}">${value.name}</option>
-              `;
-            }); 
-
-            $('.color_add').html(color_option);
-
-
-            
-
-
-            //Colors end
+          }catch(error){
+            console.log(error);
+          } finally {
+            hideLoader();
+          }
         }
-      }
-     });
-  }
 
-   //Brand Refresh page
-   const ProductRefresh = () => {
         ProductList();
-        $("#searchBox").val(" ");
-    }
 
 
-    //Color Page
-    const ProductPage = (page) => {
-        ProductList(page);
-    }
+        //search event 
+        $(document).on("click", '.searchBtn', function() {
+            let searchValue = $("#searchBox").val();
+            ProductList(1, searchValue);
+
+            //close modal
+            $("#modalSearch").modal('hide');
+        });
+
+        const handleClickOnButtonNewProduct = () => {
+            $.ajax({
+                type: "POST",
+                url: "{{ route('product.data') }}",
+                dataType: "json",
+                success: function(response) {
+                    if (response.status == 200) {
+
+                        //Categories start
+                        let categories = response.data.categories;
+                        let cate_option = ``;
+                        $.each(categories, function(key, value) {
+                            cate_option += `
+                 <option value="${value.id}">${value.name}</option>
+              `;
+                        });
+
+                        $('.category_add').html(cate_option);
+                        //Categories end
+
+                        //Brands Start
+                        let brands = response.data.brands;
+                        let brand_option = ``;
+                        $.each(brands, function(key, value) {
+                            brand_option += `
+                 <option value="${value.id}">${value.name}</option>
+              `;
+                        });
+                        $('.brand_add').html(brand_option);
+                        //Brands end
+
+                        //Colors Start
+                        let colors = response.data.colors;
+                        let color_option = ``;
+                        $.each(colors, function(key, value) {
+                            color_option += `
+                 <option value="${value.id}">${value.name}</option>
+              `;
+                        });
+
+                        $('.color_add').html(color_option);
 
 
-    //Next Page
-    const NextPage  = (page) => {
-        ProductList(page + 1);
-    }
 
 
-    //Previous Page
-    const PreviousPage = (page) => {
-        ProductList(page - 1);
-    }
+
+                        //Colors end
+                    }
+                }
+            });
+        }
+
+        //Brand Refresh page
+        const ProductRefresh = () => {
+            ProductList();
+            $("#searchBox").val(" ");
+        }
 
 
- 
-    const ProductUpload = (form) => {
-    let payloads = new FormData($(form)[0]);
-    $.ajax({
-      type: "POST",
-      url: "{{ route('product.uploads') }}",
-      data: payloads,
-      dataType: "json",
-      contentType: false,
-      processData: false,
-      success: function (response) {
-         if(response.status == 200){
-             Message(response.message);
+        //Color Page
+        const ProductPage = (page) => {
+            ProductList(page);
+        }
 
-             let images = response.images;
-             let img = ``;
-             $.each(images, function (key, value) { 
-                  img = `
+
+        //Next Page
+        const NextPage = (page) => {
+            ProductList(page + 1);
+        }
+
+
+        //Previous Page
+        const PreviousPage = (page) => {
+            ProductList(page - 1);
+        }
+
+
+
+        const ProductUpload = (form) => {
+            let payloads = new FormData($(form)[0]);
+            $.ajax({
+                type: "POST",
+                url: "{{ route('product.uploads') }}",
+                data: payloads,
+                dataType: "json",
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    if (response.status == 200) {
+                        Message(response.message);
+
+                        let images = response.images;
+                        let img = ``;
+                        $.each(images, function(key, value) {
+                            img = `
                     <div class="col-lg-4 col-md-6 col-12 mb-3">
                         <input type="hidden" name="image_uploads[]" value="${value}">
                         <img class="w-100" src="{{ asset('uploads/temp/${value}') }}">
@@ -279,257 +328,269 @@
                     </div>
                   `;
 
-                if(form === '.formUpdateProduct'){
-                   $('.show-images-edit').append(img);
-                }else if(form === '.formCreateProduct'){
-                   $('.show-images').append(img);
+                            if (form === '.formUpdateProduct') {
+                                $('.show-images-edit').append(img);
+                            } else if (form === '.formCreateProduct') {
+                                $('.show-images').append(img);
+                            }
+
+
+
+                        });
+
+                        $('.image').val("");
+
+
+                    }
                 }
-
-                
-
-             });
-
-             $('.image').val("");
-
-             
-         }
-      }
-    });
-  }
-
-  const ProductCancelImage = (e,image) => {
-
-    if(confirm("Do you want to cancel ?")){
-      $.ajax({
-        type: "POST",
-        url: "{{ route('product.cancel') }}",
-        data: {
-          "image" : image
-        },
-        dataType: "json",
-        success: function (response) {
-          if(response.status == 200){
-            
-            Message(response.message);
-            $(e).parent().remove();
-            
-          }
+            });
         }
-      });
-    }
-    
-  }
 
-  const ProductStore = (form) => {
-    let payloads = new FormData($(form)[0]);
+        const ProductCancelImage = (e, image) => {
 
-    $.ajax({
-      type: "POST",
-      url: "{{ route('product.store') }}",
-      data: payloads,
-      dataType: "json",
-      contentType: false,
-      processData: false,
-      success: function (response) {
-         if(response.status == 200){
-          $(form).trigger("reset");
-          $('.show-images').html(" ");
-          $("#modalCreateProduct").modal('hide');
-          $('input').removeClass("is-invalid").siblings("p").removeClass('text-danger').text(" ")
-          Message(response.message);
-          ProductList();
-          
-         }else{ 
-            Message(response.message,false);
+            if (confirm("Do you want to cancel ?")) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('product.cancel') }}",
+                    data: {
+                        "image": image
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.status == 200) {
 
-            if(response.errors.title){
-              $('.title_add').addClass("is-invalid").siblings("p").addClass('text-danger').text(response.errors.title)
-            }else{
-              $('.title_add').removeClass("is-invalid").siblings("p").removeClass('text-danger').text("")
+                            Message(response.message);
+                            $(e).parent().remove();
+
+                        }
+                    }
+                });
             }
 
-            if(response.errors.price){
-              $('.price_add').addClass("is-invalid").siblings("p").addClass('text-danger').text(response.errors.price)
-            }else{
-              $('.price_add').removeClass("is-invalid").siblings("p").removeClass('text-danger').text("")
+        }
 
-            }
+        const ProductStore = (form) => {
+            let payloads = new FormData($(form)[0]);
 
-            if(response.errors.qty){
-              $('.qty_add').addClass("is-invalid").siblings("p").addClass('text-danger').text(response.errors.qty)
-            }else{
-              $('.qty_add').removeClass("is-invalid").siblings("p").removeClass('text-danger').text("")
-            }
-         }
-      }
-    });
-  }
+            $.ajax({
+                type: "POST",
+                url: "{{ route('product.store') }}",
+                data: payloads,
+                dataType: "json",
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    if (response.status == 200) {
+                        $(form).trigger("reset");
+                        $('.show-images').html(" ");
+                        $("#modalCreateProduct").modal('hide');
+                        $('input').removeClass("is-invalid").siblings("p").removeClass('text-danger').text(
+                            " ")
+                        Message(response.message);
+                        ProductList();
+
+                    } else {
+                        Message(response.message, false);
+
+                        if (response.errors.title) {
+                            $('.title_add').addClass("is-invalid").siblings("p").addClass('text-danger')
+                                .text(response.errors.title)
+                        } else {
+                            $('.title_add').removeClass("is-invalid").siblings("p").removeClass(
+                                'text-danger').text("")
+                        }
+
+                        if (response.errors.price) {
+                            $('.price_add').addClass("is-invalid").siblings("p").addClass('text-danger')
+                                .text(response.errors.price)
+                        } else {
+                            $('.price_add').removeClass("is-invalid").siblings("p").removeClass(
+                                'text-danger').text("")
+
+                        }
+
+                        if (response.errors.qty) {
+                            $('.qty_add').addClass("is-invalid").siblings("p").addClass('text-danger').text(
+                                response.errors.qty)
+                        } else {
+                            $('.qty_add').removeClass("is-invalid").siblings("p").removeClass('text-danger')
+                                .text("")
+                        }
+                    }
+                }
+            });
+        }
 
 
-  const edit = (id) => {
-       $(".show-images-edit").html(" ");
-       $.ajax({
-        type: "POST",
-        url: "{{ route('product.edit') }}",
-        data: {
-          'id' : id
-        },
-        dataType: "json",
-        success: function (response) {
-          if(response.status == 200){
-             
-            //assign id input id feild
-            $("#product_id").val(response.data.product.id);
+        const edit = (id) => {
+            $(".show-images-edit").html(" ");
+            $.ajax({
+                type: "POST",
+                url: "{{ route('product.edit') }}",
+                data: {
+                    'id': id
+                },
+                dataType: "json",
+                success: function(response) {
+                    if (response.status == 200) {
 
-            //product 
-            $(".title_edit").val(response.data.product.name);
-            $(".price_edit").val(response.data.product.price);
-            $(".qty_edit").val(response.data.product.qty);
-            $(".desc_edit").val(response.data.product.desc);
+                        //assign id input id feild
+                        $("#product_id").val(response.data.product.id);
 
-            //categories start
-            let categories = response.data.categories;
-            let cate_option = ``;
-            $.each(categories, function (key, value) { 
-              cate_option += `
+                        //product 
+                        $(".title_edit").val(response.data.product.name);
+                        $(".price_edit").val(response.data.product.price);
+                        $(".qty_edit").val(response.data.product.qty);
+                        $(".desc_edit").val(response.data.product.desc);
+
+                        //categories start
+                        let categories = response.data.categories;
+                        let cate_option = ``;
+                        $.each(categories, function(key, value) {
+                            cate_option += `
               <option value="${value.id}" ${(value.id == response.data.product.category_id) ? 'selected' : ''}>
                 ${value.name}
               </option>
               `;
-            });
+                        });
 
-            //inner to category edit 
-            $('.category_edit').html(cate_option);
-            //categories end
-          }
+                        //inner to category edit 
+                        $('.category_edit').html(cate_option);
+                        //categories end
+                    }
 
-          //brands start
-          let brands = response.data.brands;
-          let brand_option = ``;
-          $.each(brands, function (key, value) { 
-              brand_option += `
+                    //brands start
+                    let brands = response.data.brands;
+                    let brand_option = ``;
+                    $.each(brands, function(key, value) {
+                        brand_option += `
               <option value="${value.id}" ${(value.id == response.data.product.brand_id)? 'selected' : ''}>
                 ${value.name}
               </option>
               `;
-          }); 
-          //inner to brand edit 
-          $('.brand_edit').html(brand_option);
-          //brands end
+                    });
+                    //inner to brand edit 
+                    $('.brand_edit').html(brand_option);
+                    //brands end
 
 
-          //colors start
-          let colors = response.data.colors;
-          let color_ids = response.data.product.color; // 4,2,1
-         
-          //let find  = array.includes(5)  // => true or false => 1
-          let color_option = ``;
-          $.each(colors, function (key, value) { 
-              if(color_ids.includes(String(value.id))){
-                color_option += `
+                    //colors start
+                    let colors = response.data.colors;
+                    let color_ids = response.data.product.color; // 4,2,1
+
+                    //let find  = array.includes(5)  // => true or false => 1
+                    let color_option = ``;
+                    $.each(colors, function(key, value) {
+                        if (color_ids.includes(String(value.id))) {
+                            color_option += `
                    <option value="${value.id}" selected >${value.name}</option>
                 `;
-              }else{
-                color_option += `
+                        } else {
+                            color_option += `
                   <option value="${value.id}">${value.name}</option>
                 `;
-              }
-          }); 
-          //inner to color edit 
-          $('.color_edit').html(color_option);
-          //colors end
+                        }
+                    });
+                    //inner to color edit 
+                    $('.color_edit').html(color_option);
+                    //colors end
 
 
-          //Images start
-          let images = response.data.productImages;
-          let img = ``;
-          $.each(images, function (key, value) { 
-               img = `
+                    //Images start
+                    let images = response.data.productImages;
+                    let img = ``;
+                    $.each(images, function(key, value) {
+                        img = `
                  <div class="col-lg-4 col-md-6 col-12 mb-3">
                      <input type="text" name="old_image" value="${value.image}">
                      <img class="w-100" src="{{ asset('uploads/product/${value.image}') }}">
                      <button onclick="ProductCancelImage(this,'${value.image}')" type="button" class="btn btn-danger btn-sm ">cancel</button>
                  </div>
                `
-             $('.show-images-edit').append(img)
-          });
+                        $('.show-images-edit').append(img)
+                    });
 
-          //Images end
+                    //Images end
 
+
+                }
+            });
+        }
+
+        const ProductUpdate = (form) => {
+            let payloads = new FormData($(form)[0]);
+
+            $.ajax({
+                type: "POST",
+                url: "{{ route('product.update') }}",
+                data: payloads,
+                dataType: "json",
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    if (response.status == 200) {
+                        $(form).trigger("reset");
+                        $('.show-images-edit').html(" ");
+                        $("#modalUpdateProduct").modal('hide');
+                        $('input').removeClass("is-invalid").siblings("p").removeClass('text-danger').text(
+                            " ")
+                        Message(response.message);
+                        ProductList();
+                    } else {
+                        Message(response.message, false);
+
+                        if (response.errors.title) {
+                            $('.title_edit').addClass("is-invalid").siblings("p").addClass('text-danger')
+                                .text(response.errors.title)
+                        } else {
+                            $('.title_edit').removeClass("is-invalid").siblings("p").removeClass(
+                                'text-danger').text("")
+                        }
+
+                        if (response.errors.price) {
+                            $('.price_edit').addClass("is-invalid").siblings("p").addClass('text-danger')
+                                .text(response.errors.price)
+                        } else {
+                            $('.price_edit').removeClass("is-invalid").siblings("p").removeClass(
+                                'text-danger').text("")
+
+                        }
+
+                        if (response.errors.qty) {
+                            $('.qty_edit').addClass("is-invalid").siblings("p").addClass('text-danger')
+                                .text(response.errors.qty)
+                        } else {
+                            $('.qty_edit').removeClass("is-invalid").siblings("p").removeClass(
+                                'text-danger').text("")
+                        }
+                    }
+                }
+            });
 
         }
-       });
-  }
 
-  const ProductUpdate = (form) => {
-    let payloads = new FormData($(form)[0]);
 
-    $.ajax({
-      type: "POST",
-      url: "{{ route('product.update') }}",
-      data: payloads,
-      dataType: "json",
-      contentType: false,
-      processData: false,
-      success: function (response) {
-          if(response.status == 200){
-            $(form).trigger("reset");
-            $('.show-images-edit').html(" ");
-            $("#modalUpdateProduct").modal('hide');
-            $('input').removeClass("is-invalid").siblings("p").removeClass('text-danger').text(" ")
-            Message(response.message);
-            ProductList();
-          }else{
-            Message(response.message,false);
+        //Product delete 
+        const ProductDelete = (id) => {
+            if (confirm("Do you want to delete the product?")) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('product.destroy') }}",
+                    data: {
+                        "id": id
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.status == 200) {
+                            Message(response.message);
 
-            if(response.errors.title){
-              $('.title_edit').addClass("is-invalid").siblings("p").addClass('text-danger').text(response.errors.title)
-            }else{
-              $('.title_edit').removeClass("is-invalid").siblings("p").removeClass('text-danger').text("")
+                            //Rendering product list
+                            ProductList();
+
+                        }
+                    }
+                });
             }
-
-            if(response.errors.price){
-              $('.price_edit').addClass("is-invalid").siblings("p").addClass('text-danger').text(response.errors.price)
-            }else{
-              $('.price_edit').removeClass("is-invalid").siblings("p").removeClass('text-danger').text("")
-
-            }
-
-            if(response.errors.qty){
-              $('.qty_edit').addClass("is-invalid").siblings("p").addClass('text-danger').text(response.errors.qty)
-            }else{
-              $('.qty_edit').removeClass("is-invalid").siblings("p").removeClass('text-danger').text("")
-            }
-          }
-      }
-    });
-
-  }
-
-
-  //Product delete 
-  const ProductDelete = (id) => {
-    if(confirm("Do you want to delete the product?")){
-      $.ajax({
-        type: "POST",
-        url: "{{ route('product.destroy') }}",
-        data: {
-          "id" : id
-        },
-        dataType: "json",
-        success: function (response) {
-          if(response.status == 200){
-            Message(response.message);
-
-            //Rendering product list
-            ProductList();
-            
-          }
         }
-      });
-    }
-  }
-
-
-</script>
+    </script>
 @endsection
