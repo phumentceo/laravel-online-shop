@@ -26,7 +26,7 @@
                   <label for="">Status</label>
                   <select name="status" class="status form-control">
                      <option value="1">Active</option>
-                     <option value="0">Block</option>
+                     <option value="0">Inactive</option>
                   </select>
                   <p></p>
                 </div>

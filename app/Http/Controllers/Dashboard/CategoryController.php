@@ -154,13 +154,13 @@ class CategoryController extends Controller
 
             return response([
                'status' => 404,
-               'message' => "Category not found with id "+$request->id
+               'message' => "Category not found with id "+$request->category_id
             ]);
 
         }
 
         $validator = Validator::make($request->all(),[
-            'name' => 'required|unique:categories,name,'.$request->id,
+            'name' => 'required|unique:categories,name,'.$request->category_id,
         ]);
 
         if($validator->passes()){

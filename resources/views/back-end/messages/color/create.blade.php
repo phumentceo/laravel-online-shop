@@ -2,7 +2,11 @@
     <div class="modal-dialog" style="max-width:40%;">
       <div class="modal-content">
         <div class="modal-header">
+<<<<<<< HEAD
           <h1 class="modal-title fs-5" id="exampleModalLabel">Create Brand</h1>
+=======
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Create Color</h1>
+>>>>>>> master
         </div>
         <div class="modal-body">
            <form method="POST" class="formCreateColor" enctype="multipart/form-data">
@@ -15,14 +19,24 @@
 
                 <div class="form-group">
                     <label for="">Color</label>
+<<<<<<< HEAD
                     <input type="color" name="color_code" class="color_code form-control" id="">
                  </div>
+=======
+                    <input type="color" name="color" class="name form-control" id="">
+                </div>
+                
+>>>>>>> master
 
                 <div class="form-group">
                   <label for="">Status</label>
                   <select name="status" class="status form-control">
                      <option value="1">Active</option>
+<<<<<<< HEAD
                      <option value="0">Block</option>
+=======
+                     <option value="0">Inactive</option>
+>>>>>>> master
                   </select>
                   <p></p>
                 </div>

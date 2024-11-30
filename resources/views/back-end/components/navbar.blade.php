@@ -128,18 +128,29 @@
         </li>
         <li class="nav-item dropdown d-none d-xl-inline-block user-dropdown">
           <a class="nav-link dropdown-toggle" id="UserDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
-            <img class="img-xs rounded-circle" src="{{ asset('back-end/assets/images/faces/face8.jpg') }}" alt="Profile image"> </a>
+            @if (Auth::user()->image != null)
+              <img class="img-xs rounded-circle" src="{{ asset('uploads/user/'.Auth::user()->image) }}" alt="Profile image"> </a>
+            @else
+              <img class="img-xs rounded-circle" src="{{ asset('back-end/assets/images/faces/face8.jpg') }}" alt="Profile image"> </a>
+            @endif
+            
           <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
             <div class="dropdown-header text-center">
-              <img class="img-md rounded-circle" src="{{ asset('back-end/assets/images/faces/face8.jpg') }}" alt="Profile image">
-              <p class="mb-1 mt-3 font-weight-semibold">Allen Moreno</p>
-              <p class="font-weight-light text-muted mb-0">allenmoreno@gmail.com</p>
+
+              @if (Auth::user()->image != null)
+                <img class="img-xs rounded-circle" src="{{ asset('uploads/user/'.Auth::user()->image) }}" alt="Profile image"> </a>
+              @else
+                <img class="img-xs rounded-circle" src="{{ asset('back-end/assets/images/faces/face8.jpg') }}" alt="Profile image"> </a>
+              @endif
+
+              <p style="text-transform:uppercase;" class="mb-1 mt-3 font-weight-semibold">{{ (Auth::check()) ? Auth::user()->name : "KOK" }}</p>
+              <p class="font-weight-light text-muted mb-0">{{ (Auth::check()) ? Auth::user()->email : "KOK" }}</p>
             </div>
             <a class="dropdown-item">My Profile <span class="badge badge-pill badge-danger">1</span><i class="dropdown-item-icon ti-dashboard"></i></a>
             <a class="dropdown-item">Messages<i class="dropdown-item-icon ti-comment-alt"></i></a>
             <a class="dropdown-item">Activity<i class="dropdown-item-icon ti-location-arrow"></i></a>
             <a class="dropdown-item">FAQ<i class="dropdown-item-icon ti-help-alt"></i></a>
-            <a class="dropdown-item">Sign Out<i class="dropdown-item-icon ti-power-off"></i></a>
+            <a href="{{ route('auth.logout') }}" class="dropdown-item">Logout<i class="dropdown-item-icon ti-power-off"></i></a>
           </div>
         </li>
       </ul>

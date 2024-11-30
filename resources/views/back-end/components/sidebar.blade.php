@@ -3,19 +3,24 @@
       <li class="nav-item nav-profile">
         <a href="#" class="nav-link">
           <div class="profile-image">
-            <img class="img-xs rounded-circle" src="{{ asset('back-end/assets/images/faces/face8.jpg') }}" alt="profile image">
+            @if (Auth::user()->image != null)
+              <img class="img-xs rounded-circle" src="{{ asset('uploads/user/'.Auth::user()->image) }}" alt="profile image">
+            @else
+              <img class="img-xs rounded-circle" src="{{ asset('back-end/assets/images/dashboard/profile-card.jpg') }}" alt="profile image">
+            @endif
+            
             <div class="dot-indicator bg-success"></div>
           </div>
           <div class="text-wrapper">
-            <p class="profile-name">Allen Moreno</p>
-            <p class="designation">Premium user</p>
+            <p class="profile-name text-uppercase">{{ (Auth::check()) ? Auth::user()->name : '' }}</p>
+            <p class="designation">{{  (Auth::check() && Auth::user()->role == 1 ) ? "ADMIN" : 'Premium user' }} </p>
           </div>
         </a>
       </li>
       <li class="nav-item nav-category">Main Menu</li>
 
       <li class="nav-item">
-        <a class="nav-link" href="index.html">
+        <a class="nav-link" href="{{ route('dashboard.index') }}">
           <i class="menu-icon typcn typcn-document-text"></i>
           <span class="menu-title">Dashboard</span>
         </a>
@@ -37,6 +42,7 @@
 
       <li class="nav-item">
         <a class="nav-link" href="{{ route('color.index') }}">
+<<<<<<< HEAD
           <i class="menu-icon typcn typcn-document-text"></i>
           <span class="menu-title">Color</span>
         </a>
@@ -44,11 +50,26 @@
 
       <li class="nav-item">
         <a class="nav-link" href="{{ route('user.index') }}">
+=======
+>>>>>>> master
           <i class="menu-icon typcn typcn-document-text"></i>
-          <span class="menu-title">Users</span>
+          <span class="menu-title">Color</span>
         </a>
       </li>
 
-      
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('product.index') }}">
+          <i class="menu-icon typcn typcn-document-text"></i>
+          <span class="menu-title">Product</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('profile.index') }}">
+          <i class="menu-icon typcn typcn-document-text"></i>
+          <span class="menu-title">Profile</span>
+        </a>
+      </li>
+
     </ul>
   </nav>

@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="{{ asset('back-end/assets/vendors/iconfonts/flag-icon-css/css/flag-icon.min.css') }}">
     <link rel="stylesheet" href="{{ asset('back-end/assets/vendors/css/vendor.bundle.base.css') }}">
     <link rel="stylesheet" href="{{ asset('back-end/assets/vendors/css/vendor.bundle.addons.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
     
     <link rel="stylesheet" href="{{ asset('back-end/assets/css/shared/style.css') }}">
   
@@ -25,6 +27,11 @@
 
     <!-- Toastify messages -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+    {{-- Select 2 --}}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+    @yield('styles')
 
   </head>
   <body>
@@ -107,6 +114,9 @@
     <!-- Toastify messages -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
+    {{-- Select 2 script --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script> 
+
     <script>
       $.ajaxSetup({
           headers: {
@@ -114,7 +124,7 @@
           }
        });
 
-       const Message = (message) => {
+       const Message = (message,status=true) => {
         Toastify({
             text: `${message}`,
             duration: 2000,
@@ -125,7 +135,9 @@
             position: "right", // `left`, `center` or `right`
             stopOnFocus: true, // Prevents dismissing of toast on hover
             style: {
-              background: "linear-gradient(to right, #00b09b, #96c93d)",
+              background: `${ 
+                   status ? 'linear-gradient(to right, #00b09b, #96c93d)' :  'red'
+              }`,
             },
             onClick: function(){} // Callback after click
         }).showToast();
