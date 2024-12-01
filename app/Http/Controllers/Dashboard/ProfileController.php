@@ -82,21 +82,6 @@ class ProfileController extends Controller
             $user->save();
 
 
-            //Save contacts
-            $contacts = $request->link;
-            foreach($contacts as  $contact){
-                Contact::updateOrCreate(
-                    [
-                        'user_id' => Auth::user()->id,
-                        'contact_url' => $contact
-                    ],
-                    [
-                        'user_id' => Auth::user()->id,
-                        'contact_url' => $contact
-                    ]
-                );
-            }
-
             return redirect()->back()->with('success','Profile update successfully.');
         }else{
             return redirect()->back()->withInput()->withErrors($validator);
