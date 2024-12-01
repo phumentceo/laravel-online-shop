@@ -75,12 +75,12 @@
 
                             <div class="form-group">
                                 <label for="facebook">Facebook</label>
-                                <input type="text" class="form-control" id="facebook" name="link[]"  placeholder="link to you facebook profile">
+                                <input type="text" class="form-control" id="facebook" name="links[]"  placeholder="link to you facebook profile">
                             </div>
 
                             <div class="form-group">
                                 <label for="telegram">Telegram</label>
-                                <input type="text" class="form-control" id="telegram"  name="link[]" placeholder="link to you telegram account">
+                                <input type="text" class="form-control" id="telegram"  name="links[]" placeholder="link to you telegram account">
                             </div>
 
                             
@@ -92,8 +92,15 @@
                         
                     </div>
 
-                    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">...</div>
-                    <div class="tab-pane fade" id="nav-saling" role="tabpanel" aria-labelledby="nav-saling-tab" tabindex="0">...</div>
+                    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0"></div>
+                    <div class="tab-pane fade" id="nav-saling" role="tabpanel" aria-labelledby="nav-saling-tab" tabindex="0">
+                        <div class="card mt-5">
+                            <h3 class="card-header p-3">Laravel 11 ChartJS Chart Example - ItSolutionStuff.com</h3>
+                            <div class="card-body">
+                                <canvas id="myChart" height="120px"></canvas>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="tab-pane fade  {{ Session::has('password') ? 'show active' : ' '  }} p-3" id="nav-change-pass" role="tabpanel" aria-labelledby="nav-change-pass-tab" tabindex="0">
 
@@ -125,7 +132,7 @@
                        
 
                     </div>
-
+                    
                 </div>
           </div>
         </div>
@@ -136,6 +143,7 @@
 
 @section('scripts')
 <script>
+
     const changeImageProfile = (form) => {
         let payloads = new FormData($(form)[0]);
         $.ajax({

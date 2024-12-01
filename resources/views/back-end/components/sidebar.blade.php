@@ -42,7 +42,6 @@
 
       <li class="nav-item">
         <a class="nav-link" href="{{ route('color.index') }}">
-<<<<<<< HEAD
           <i class="menu-icon typcn typcn-document-text"></i>
           <span class="menu-title">Color</span>
         </a>
@@ -50,8 +49,6 @@
 
       <li class="nav-item">
         <a class="nav-link" href="{{ route('user.index') }}">
-=======
->>>>>>> master
           <i class="menu-icon typcn typcn-document-text"></i>
           <span class="menu-title">Color</span>
         </a>

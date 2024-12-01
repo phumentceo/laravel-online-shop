@@ -117,6 +117,9 @@
     {{-- Select 2 script --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script> 
 
+    {{-- cart js --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script>
       $.ajaxSetup({
           headers: {
