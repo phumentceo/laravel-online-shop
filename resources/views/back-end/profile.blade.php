@@ -33,6 +33,7 @@
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
 
+                    {{-- Overview --}}
                     <div class="tab-pane fade {{ Session::has('profile') ? 'show active' : ' '  }} p-3" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
 
                         <form method="POST" action="{{ route('profile.update') }}"  class=" p-4 formUpdateProfile" enctype="multipart/form-data">
@@ -94,7 +95,8 @@
 
                     <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">...</div>
                     <div class="tab-pane fade" id="nav-saling" role="tabpanel" aria-labelledby="nav-saling-tab" tabindex="0">...</div>
-
+                    
+                    {{-- Change password --}}
                     <div class="tab-pane fade  {{ Session::has('password') ? 'show active' : ' '  }} p-3" id="nav-change-pass" role="tabpanel" aria-labelledby="nav-change-pass-tab" tabindex="0">
 
                         <form action="{{ route('profile.change.password') }}" class=" p-4 border" method="POST" >

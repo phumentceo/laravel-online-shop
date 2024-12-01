@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Contact;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -48,12 +49,15 @@ class ProfileController extends Controller
     }
 
     public function updateProfile(Request $request){
+
+        
         $validator = Validator::make($request->all(),[
             'name' => ['required','string','max:255'],
             'email' => ['required','string','email','max:255','unique:users,email,'.Auth::user()->id],
             'phone' => ['required','string','max:20','unique:users,phone,'.Auth::user()->id],
         ]);
 
+    
         session()->flash('profile');
 
         if($validator->passes()){
@@ -76,6 +80,22 @@ class ProfileController extends Controller
             }
 
             $user->save();
+
+
+            //Save contacts
+            $contacts = $request->link;
+            foreach($contacts as  $contact){
+                Contact::updateOrCreate(
+                    [
+                        'user_id' => Auth::user()->id,
+                        'contact_url' => $contact
+                    ],
+                    [
+                        'user_id' => Auth::user()->id,
+                        'contact_url' => $contact
+                    ]
+                );
+            }
 
             return redirect()->back()->with('success','Profile update successfully.');
         }else{
