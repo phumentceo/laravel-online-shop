@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
+use App\Models\UserAddress;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,9 +19,11 @@ class ProfileController extends Controller
 
         $user = User::find(Auth::user()->id);
         $contacts = Contact::where('user_id',Auth::user()->id)->get();
+        $userAddress = UserAddress::where('user_id',Auth::user()->id)->first();
         return view('back-end.profile',[
             'user'    => $user,
-            'contacts' => $contacts
+            'contacts' => $contacts,
+            'address' => $userAddress
         ]);
 
        
@@ -55,7 +58,6 @@ class ProfileController extends Controller
 
     public function updateProfile(Request $request){
 
-        dd($request->all());
         
         $validator = Validator::make($request->all(),[
             'name' => ['required','string','max:255'],
@@ -124,6 +126,23 @@ class ProfileController extends Controller
             }
 
             //-------------Conact update or create end----------------
+
+
+            #--------------Adress update or create start----------------
+            $findAdress = UserAddress::where('user_id',Auth::user()->id)->first();
+            if($findAdress != null){
+                //update
+                $findAdress->address = $request->address;
+                $findAdress->save();
+
+            }else{
+                //insert
+                $adress = new UserAddress();
+                $adress->user_id = Auth::user()->id;
+                $adress->address = $request->address;
+                $adress->save();
+            }
+            #-------------Adress update or create start----------------
 
             
 
