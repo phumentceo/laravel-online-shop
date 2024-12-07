@@ -10,15 +10,20 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use PhpParser\Node\Expr\AssignOp\Concat;
 
 class ProfileController extends Controller
 {
     public function index(){
 
         $user = User::find(Auth::user()->id);
+        $contacts = Contact::where('user_id',Auth::user()->id)->get();
         return view('back-end.profile',[
-            'user' => $user
+            'user'    => $user,
+            'contacts' => $contacts
         ]);
+
+       
     }
 
     public function changePassword(Request $request){
@@ -50,6 +55,7 @@ class ProfileController extends Controller
 
     public function updateProfile(Request $request){
 
+        dd($request->all());
         
         $validator = Validator::make($request->all(),[
             'name' => ['required','string','max:255'],
@@ -59,6 +65,8 @@ class ProfileController extends Controller
 
     
         session()->flash('profile');
+
+        #----------------------User Update start--------------------
 
         if($validator->passes()){
             $user = User::find(Auth::user()->id);
@@ -80,6 +88,44 @@ class ProfileController extends Controller
             }
 
             $user->save();
+
+            #--------------User update end-----------------------
+
+
+
+            //--------------Conact update or create start----------------
+            $findContact = Contact::where('user_id',Auth::user()->id)->first();
+
+            if($findContact != null){
+                //update user if already conacts exist
+                $allContact = Contact::where('user_id',Auth::user()->id)->get();
+                $links = $request->link;
+                /*
+                    "link" => array:2 [▼
+                        0 => "http://facebook/phumentpot"
+                        1 => "http://telegram/phumentpot"
+                    ]
+                 */
+
+                for($i=0;$i<count($allContact);$i++){
+                    $allContact[$i]->contact_url = $links[$i];
+                    $allContact[$i]->save();
+                }
+
+            }else{
+                //insert user if not exists
+                $links = $request->link;
+                for($i=0;$i<count($links);$i++){
+                    $contact = new Contact();
+                    $contact->user_id = Auth::user()->id;
+                    $contact->contact_url = $links[$i];
+                    $contact->save();
+                }
+            }
+
+            //-------------Conact update or create end----------------
+
+            
 
 
             return redirect()->back()->with('success','Profile update successfully.');
