@@ -17,6 +17,52 @@ use Illuminate\Support\Facades\Route;
 //Authentication
 
 
+Route::prefix('admin')->group(function(){
+
+    Route::middleware('guest.admin')->group(function(){
+        Route::get('/',[AuthController::class,'login'])->name('auth.index');
+        Route::post('/login',[AuthController::class,'authenticate'])->name('auth.authenticate');
+    });
+
+    Route::middleware('auth.admin')->group(function(){
+
+        #-----Dashboard Router start---------
+        Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard.index');
+        #-----Dashboard Router end---------
+
+        #-----------User Routers start----------
+        Route::get("/user",[UserController::class,'index'])->name("user.index");
+        Route::post("/user/list",[UserController::class,'list'])->name("user.list");
+        Route::post("/user/store",[UserController::class,'store'])->name("user.store");
+        Route::post("/user/destory",[UserController::class,'destory'])->name("user.destory");
+        #-----------User Routers end----------
+
+        #--------Profile Routers start-----------
+        Route::get('/profile',[ProfileController::class,'index'])->name('profile.index');
+        Route::post('/profile/change/password',[ProfileController::class,'changePassword'])->name('profile.change.password');
+        Route::post('/profile/update',[ProfileController::class,'updateProfile'])->name('profile.update');
+        Route::post('/profile/change/image',[ProfileController::class,'changeProfileImage'])->name('profile.change.image');
+
+        //Image Routers
+        Route::post('/product/upload',[ImageController::class,'uploads'])->name('product.uploads');
+        Route::post('/product/cancel',[ImageController::class,'cancel'])->name('product.cancel');
+
+        #--------Profile Routers end-----------
+
+        #-------Logout start------------
+        Route::get('/logout',[AuthController::class,'logout'])->name('auth.logout');
+        #-------Logout end--------------
+
+    });
+
+
+});
+
+Route::prefix('user')->group(function(){
+
+});
+
+
 //Route with prefix
 Route::group(['prefix' => 'admin'], function () {
 
