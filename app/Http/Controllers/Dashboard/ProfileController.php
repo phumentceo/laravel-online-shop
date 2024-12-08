@@ -4,10 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
-<<<<<<< HEAD
-=======
 use App\Models\UserAddress;
->>>>>>> master
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -61,10 +58,6 @@ class ProfileController extends Controller
 
     public function updateProfile(Request $request){
 
-<<<<<<< HEAD
-=======
-        
->>>>>>> master
         $validator = Validator::make($request->all(),[
             'name' => ['required','string','max:255'],
             'email' => ['required','string','email','max:255','unique:users,email,'.Auth::user()->id],
@@ -99,7 +92,6 @@ class ProfileController extends Controller
 
             $user->save();
 
-<<<<<<< HEAD
 
             //create with array
             $contacts = $request->links;
@@ -118,9 +110,7 @@ class ProfileController extends Controller
 
             
 
-=======
             #--------------User update end-----------------------
-
 
 
             //--------------Conact update or create start----------------
@@ -172,10 +162,6 @@ class ProfileController extends Controller
             }
             #-------------Adress update or create start----------------
 
-            
-
-
->>>>>>> master
             return redirect()->back()->with('success','Profile update successfully.');
         }else{
             return redirect()->back()->withInput()->withErrors($validator);
@@ -204,8 +190,5 @@ class ProfileController extends Controller
         }
 
         
-
-
-
     }
 }

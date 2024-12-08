@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Contact extends Model
 {
     use HasFactory;
-<<<<<<< HEAD
 
 
     protected $fillable = [
@@ -17,6 +16,4 @@ class Contact extends Model
         'contact_url'
     ];
     
-=======
->>>>>>> master
 }
