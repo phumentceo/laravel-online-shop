@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace App\Http\Middleware\Admin;
 
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class DashboardMiddleware
+class AdminRedirect
 {
     /**
      * Handle an incoming request.
@@ -16,11 +16,9 @@ class DashboardMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(Auth::user()->role == 1){
-            return $next($request);
-        }else{
-            return redirect()->back()->with("error","Can't used dashboard page!");
+        if(Auth::check() && Auth::user()->role == 1){
+            return redirect()->route('admin.dashobard.index');
         }
-        
+        return $next($request);
     }
 }
