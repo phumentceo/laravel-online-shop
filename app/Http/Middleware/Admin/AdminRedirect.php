@@ -17,7 +17,7 @@ class AdminRedirect
     public function handle(Request $request, Closure $next): Response
     {
         if(Auth::check() && Auth::user()->role == 1){
-            return redirect()->route('dashboard.index');
+            return redirect()->route('admin.dashboard.index');
         }else{
             return $next($request);
         }

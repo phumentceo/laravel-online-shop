@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Dashboard\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\Dashboard\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Dashboard\AuthController;
 use App\Http\Controllers\Dashboard\BrandController;
 use App\Http\Controllers\Dashboard\CategoryController;
@@ -14,14 +16,14 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('admin')->name('admin.')->group(function(){
 
     Route::middleware('guest.admin')->group(function(){
-        Route::get('/',[AuthController::class,'login'])->name('auth.index');
-        Route::post('/login',[AuthController::class,'authenticate'])->name('auth.authenticate');
+        Route::get('/',[AdminAuthController::class,'login'])->name('login.show');
+        Route::post('/login',[AdminAuthController::class,'authenticate'])->name('login.process');
     });
 
     Route::middleware('auth.admin')->group(function(){
 
         #-----Dashboard Router start---------
-        Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard.index');
+        Route::get('/dashboard',[AdminDashboardController::class,'index'])->name('dashboard.index');
         #-----Dashboard Router end-----------
 
         #-----------User Routers start----------
