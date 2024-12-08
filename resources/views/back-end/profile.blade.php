@@ -33,6 +33,7 @@
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
 
+                    {{-- Overview --}}
                     <div class="tab-pane fade {{ Session::has('profile') ? 'show active' : ' '  }} p-3" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
 
                         <form method="POST" action="{{ route('profile.update') }}"  class=" p-4 formUpdateProfile" enctype="multipart/form-data">
@@ -70,17 +71,27 @@
 
                             <div class="form-group">
                                 <label for="address">Address</label>
-                                <input type="text" class="form-control" name="address" id="address">
+                                <input type="text" class="form-control" value="{{ $address != null ? $address->address : '' }}" name="address" id="address">
                             </div>
+
+                            
 
                             <div class="form-group">
                                 <label for="facebook">Facebook</label>
+<<<<<<< HEAD
                                 <input type="text" class="form-control" id="facebook" name="links[]"  placeholder="link to you facebook profile">
+=======
+                                <input type="text" class="form-control" id="facebook" value="{{ $contacts != null ? $contacts[0]->contact_url : '' }}" name="link[]"  placeholder="link to you facebook profile">
+>>>>>>> master
                             </div>
 
                             <div class="form-group">
                                 <label for="telegram">Telegram</label>
+<<<<<<< HEAD
                                 <input type="text" class="form-control" id="telegram"  name="links[]" placeholder="link to you telegram account">
+=======
+                                <input type="text" class="form-control" id="telegram" value="{{ $contacts != null ? $contacts[1]->contact_url : '' }}" name="link[]" placeholder="link to you telegram account">
+>>>>>>> master
                             </div>
 
                             
@@ -92,6 +103,7 @@
                         
                     </div>
 
+<<<<<<< HEAD
                     <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0"></div>
                     <div class="tab-pane fade" id="nav-saling" role="tabpanel" aria-labelledby="nav-saling-tab" tabindex="0">
                         <div class="card mt-5">
@@ -102,6 +114,12 @@
                         </div>
                     </div>
 
+=======
+                    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">...</div>
+                    <div class="tab-pane fade" id="nav-saling" role="tabpanel" aria-labelledby="nav-saling-tab" tabindex="0">...</div>
+                    
+                    {{-- Change password --}}
+>>>>>>> master
                     <div class="tab-pane fade  {{ Session::has('password') ? 'show active' : ' '  }} p-3" id="nav-change-pass" role="tabpanel" aria-labelledby="nav-change-pass-tab" tabindex="0">
 
                         <form action="{{ route('profile.change.password') }}" class=" p-4 border" method="POST" >

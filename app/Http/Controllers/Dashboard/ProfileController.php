@@ -4,21 +4,32 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
+<<<<<<< HEAD
+=======
+use App\Models\UserAddress;
+>>>>>>> master
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use PhpParser\Node\Expr\AssignOp\Concat;
 
 class ProfileController extends Controller
 {
     public function index(){
 
         $user = User::find(Auth::user()->id);
+        $contacts = Contact::where('user_id',Auth::user()->id)->get();
+        $userAddress = UserAddress::where('user_id',Auth::user()->id)->first();
         return view('back-end.profile',[
-            'user' => $user
+            'user'    => $user,
+            'contacts' => $contacts,
+            'address' => $userAddress
         ]);
+
+       
     }
 
     public function changePassword(Request $request){
@@ -50,13 +61,20 @@ class ProfileController extends Controller
 
     public function updateProfile(Request $request){
 
+<<<<<<< HEAD
+=======
+        
+>>>>>>> master
         $validator = Validator::make($request->all(),[
             'name' => ['required','string','max:255'],
             'email' => ['required','string','email','max:255','unique:users,email,'.Auth::user()->id],
             'phone' => ['required','string','max:20','unique:users,phone,'.Auth::user()->id],
         ]);
 
+    
         session()->flash('profile');
+
+        #----------------------User Update start--------------------
 
         if($validator->passes()){
 
@@ -81,6 +99,7 @@ class ProfileController extends Controller
 
             $user->save();
 
+<<<<<<< HEAD
 
             //create with array
             $contacts = $request->links;
@@ -99,6 +118,64 @@ class ProfileController extends Controller
 
             
 
+=======
+            #--------------User update end-----------------------
+
+
+
+            //--------------Conact update or create start----------------
+            $findContact = Contact::where('user_id',Auth::user()->id)->first();
+
+            if($findContact != null){
+                //update user if already conacts exist
+                $allContact = Contact::where('user_id',Auth::user()->id)->get();
+                $links = $request->link;
+                /*
+                    "link" => array:2 [▼
+                        0 => "http://facebook/phumentpot"
+                        1 => "http://telegram/phumentpot"
+                    ]
+                 */
+
+                for($i=0;$i<count($allContact);$i++){
+                    $allContact[$i]->contact_url = $links[$i];
+                    $allContact[$i]->save();
+                }
+
+            }else{
+                //insert user if not exists
+                $links = $request->link;
+                for($i=0;$i<count($links);$i++){
+                    $contact = new Contact();
+                    $contact->user_id = Auth::user()->id;
+                    $contact->contact_url = $links[$i];
+                    $contact->save();
+                }
+            }
+
+            //-------------Conact update or create end----------------
+
+
+            #--------------Adress update or create start----------------
+            $findAdress = UserAddress::where('user_id',Auth::user()->id)->first();
+            if($findAdress != null){
+                //update
+                $findAdress->address = $request->address;
+                $findAdress->save();
+
+            }else{
+                //insert
+                $adress = new UserAddress();
+                $adress->user_id = Auth::user()->id;
+                $adress->address = $request->address;
+                $adress->save();
+            }
+            #-------------Adress update or create start----------------
+
+            
+
+
+>>>>>>> master
             return redirect()->back()->with('success','Profile update successfully.');
         }else{
             return redirect()->back()->withInput()->withErrors($validator);
