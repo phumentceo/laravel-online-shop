@@ -1,6 +1,7 @@
 <?php
-use Illuminate\Support\Facades\Route;
-Route::get('/front',function(){
-    return view('front-end.index');
-});
 
+use App\Http\Controllers\Front\HomeController;
+use Illuminate\Support\Facades\Route;
+
+
+Route::get('/',[HomeController::class,'homePage'])->name('home.index');

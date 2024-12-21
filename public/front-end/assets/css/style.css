@@ -56,6 +56,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+img {
+  object-fit : cover;
+}
+
 p {
   font-family: "Poppins", sans-serif;
   color: #757575;
@@ -281,6 +285,11 @@ input[type=email]:focus, input[type=password]:focus, input[type=text]:focus, inp
 .category-box:hover img {
   transform: scale(1.1);
 }
+
+.category-box-2 a img {
+  height : 730px;
+}
+
 .category-box img {
   transition: all 0.3s ease-in-out;
   width: 100%;
