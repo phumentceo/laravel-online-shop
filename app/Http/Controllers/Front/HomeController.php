@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Products;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -13,8 +14,16 @@ class HomeController extends Controller
         // Get latest 3 categories
         $categories = Category::limit(3)->get();
 
+        $products    = Products::orderBy('id','DESC')->where('status',1)->with('Images')->limit(9)->get();
+
+
+      
+       
+
+      
 
         $data['categories'] = $categories;
+        $data['products']   = $products;
 
        
 
