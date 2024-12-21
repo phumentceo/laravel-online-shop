@@ -31,4 +31,22 @@ class HomeController extends Controller
         return view('front-end.index',$data);
 
     }
+
+    public function viewProduct(Request $request){
+        // Fetch product details
+        $product = Products::where('id',$request->id)->with('Images')->first();
+
+        // Check if product exists
+        if(!$product){
+            return response()->json([
+                'status' => 404,
+                'message' => 'Product not found'
+            ]);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'product' => $product,
+        ]);
+    }
 }

@@ -84,6 +84,7 @@
     <script src="{{ asset('front-end/assets/js/script.js') }}"></script>
     
 
+    @yield('script')
 
   </body>
   </html>
