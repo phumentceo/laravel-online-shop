@@ -178,13 +178,13 @@
                     if (response.status == 200) {
 
                         let product = response.product;
+                       
                         let productHTML = `
                <div class="row">
                                     <div class="col-md-8 col-sm-6 col-xs-12">
                                         <div class="modal-image">`;
-                        if (product.images.lenght > 0) {
-                            productHTML += `<img class="img-responsive" src="{{ asset('uploads/product/${product.images[0].image}') }}"
-                                                 alt="product-img" />`;
+                        if (product.images.length >  0) {
+                            productHTML += `<img class="img-responsive" src="{{ asset('uploads/product/${product.images[0].image}') }}" />`;
                         }
 
                         productHTML += `
@@ -198,7 +198,7 @@
                                                 ${(product.desc.substring(0, 200) + '...')}
                                             </p>
                                             <a href="cart.html" class="btn btn-main">Add To Cart</a>
-                                            <a href="product-single.html" class="btn btn-transparent">View Product
+                                            <a href="/product/single/${product.id}" class="btn btn-transparent">View Product
                                                 Details</a>
                                         </div>
                                     </div>
@@ -211,5 +211,7 @@
                 }
             });
         }
+
+        
     </script>
 @endsection
