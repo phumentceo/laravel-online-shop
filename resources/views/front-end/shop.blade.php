@@ -81,6 +81,12 @@
             <!--modal end -->
 
         </div>
+
+        <div class=" text-center">
+            {{ $products->links() }}
+        </div>
+        
+        
 	</div>
 </section>
 
@@ -132,5 +138,9 @@
             }
         });
     } 
+
+   
+
+
 </script>
 @endsection
