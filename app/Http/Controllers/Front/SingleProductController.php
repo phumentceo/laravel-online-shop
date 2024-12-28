@@ -12,10 +12,13 @@ class SingleProductController extends Controller
     public function singleProduct(string $id){
         $product = Products::with(['Images','Categories','Brands'])->find($id);
 
-        $related_products = Products::with('Images')->where('brand_id',$product->brand_id)->limit(4)->get();
-       
+        $related_products = Products::with('Images')->where('brand_id',$product->brand_id)
+        ->where('price','>=',$product->price - 100)
+        ->where('price','<=',$product->price + 100)
+        ->where('status',1)
+        ->limit(4)->get();
 
-        
+
 
         //convert string  to array
         $colorIds = explode(',', $product->color);

@@ -73,12 +73,7 @@
 						</ul>
 					</div>
 					
-					<div class="product-quantity">
-						<span>Quantity:</span>
-						<div class="product-quantity-slider">
-							<input id="product-quantity" type="text" value="0" name="product-quantity">
-						</div>
-					</div>
+					
 					<div class="product-category">
 						<span>Categories:</span>
 						<ul>
@@ -295,4 +290,11 @@
   	</div>
 </div>
 
+@endsection
+@section('script')
+<script>
+	const productQty = (id) => {
+		alert(id);
+	}
+</script>
 @endsection
