@@ -291,10 +291,53 @@
 </div>
 
 @endsection
+
 @section('script')
 <script>
-	const productQty = (id) => {
-		alert(id);
-	}
+	    const viewProduct = (id) => {
+            $.ajax({
+                type: "GET",
+                url: "{{ route('product.view') }}",
+                data: {
+                    "id": id
+                },
+                dataType: "json",
+                success: function(response) {
+                    if (response.status == 200) {
+
+                        let product = response.product;
+                       
+                        let productHTML = `
+               <div class="row">
+                                    <div class="col-md-8 col-sm-6 col-xs-12">
+                                        <div class="modal-image">`;
+                        if (product.images.length >  0) {
+                            productHTML += `<img class="img-responsive" src="{{ asset('uploads/product/${product.images[0].image}') }}" />`;
+                        }
+
+                        productHTML += `
+                                          </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6 col-xs-12">
+                                        <div class="product-short-details">
+                                            <h2 class="product-title">${product.name}</h2>
+                                            <p class="product-price">$${product.price}</p>
+                                            <p class="product-short-description">
+                                                ${(product.desc.substring(0, 200) + '...')}
+                                            </p>
+                                            <a href="cart.html" class="btn btn-main">Add To Cart</a>
+                                            <a href="/product/single/${product.id}" class="btn btn-transparent">View Product
+                                                Details</a>
+                                        </div>
+                                    </div>
+                                </div>
+             `;
+
+                        $('.view-product').html(productHTML);
+
+                    }
+                }
+            });
+        } 
 </script>
 @endsection

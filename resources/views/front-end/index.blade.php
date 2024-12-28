@@ -59,7 +59,7 @@
                 <div class="col-md-6">
 
                     <div class="category-box">
-                        <a href="#!">
+                        <a href="{{ route('product.category',$categories[0]->id) }}">
                             <img src="{{ asset('uploads/category/' . $categories[0]->image) }}" alt="" />
                             <div class="content">
                                 <h3>{{ $categories[0]->name }}</h3>
@@ -67,7 +67,7 @@
                         </a>
                     </div>
                     <div class="category-box">
-                        <a href="#!">
+                        <a href="{{ route('product.category',$categories[1]->id) }}">
                             <img src="{{ asset('uploads/category/' . $categories[1]->image) }}" alt="" />
                             <div class="content">
                                 <h3>{{ $categories[1]->name }}</h3>
@@ -78,7 +78,7 @@
 
                 <div class="col-md-6">
                     <div class="category-box category-box-2">
-                        <a href="#!">
+                        <a href="{{ route('product.category',$categories[2]->id) }}">
                             <img src="{{ asset('uploads/category/' . $categories[2]->image) }}" alt="" />
                             <div class="content">
                                 <h3>{{ $categories[2]->name }}</h3>
@@ -210,8 +210,6 @@
                     }
                 }
             });
-        }
-
-        
+        } 
     </script>
 @endsection
