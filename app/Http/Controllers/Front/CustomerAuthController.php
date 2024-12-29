@@ -5,12 +5,29 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class CustomerAuthController extends Controller
 {
     public function loginShow(){
         return view('front-end.auth.login');
+    }
+
+    public function loginProcess(Request $request){
+        // Validate the request data
+        $request->validate([
+            'email' => 'required|string|email|max:255',
+            'password' => 'required|string',
+        ]);
+        
+        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
+            if(Auth::check() && Auth::user()->role == 2){
+                return redirect()->route('home.index');
+            }
+        }
+
+        return redirect()->back()->with('error', 'Invalid email or password');
     }
 
     public function registerShow(){

@@ -17,7 +17,7 @@
                    {{ Session::get('success') }}
                 </div>
             @elseif(Session::has('error'))
-             <div class="alert alert-success">
+             <div class="alert alert-danger">
                 {{ Session::get('error') }}
              </div>
             @endif
@@ -25,16 +25,16 @@
           </div>
           <h2 class="text-center">Welcome Back</h2>
           
-          <form class="text-left clearfix" action="" method="POST" onsubmit="showLoading(this)">
+          <form class="text-left clearfix" action="{{ route('customer.login.process') }}" method="POST" onsubmit="showLoading(this)">
             @csrf
             <div class="form-group">
-              <input type="email" class="form-control" name="email" placeholder="Email" required>
+              <input type="email" class="form-control" name="email" placeholder="Email" value="{{ old('email') }}">
               @error('email')
                 <small class="text-danger">{{ $message }}</small>
               @enderror
             </div>
             <div class="form-group">
-              <input type="password" class="form-control" name="password" placeholder="Password" required>
+              <input type="password" class="form-control" name="password" placeholder="Password"  value="{{ old('password') }}">
               @error('password')
                 <small class="text-danger">{{ $message }}</small>
               @enderror

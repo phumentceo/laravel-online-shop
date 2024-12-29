@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('guest.customer')->group(function(){
 
     Route::get('/login',[CustomerAuthController::class,'loginShow'])->name('customer.login');
+    Route::post('/login/process',[CustomerAuthController::class,'loginProcess'])->name('customer.login.process');
     Route::get('/register',[CustomerAuthController::class,'registerShow'])->name('customer.register');
     Route::post('/register/process',[CustomerAuthController::class,'registerProcess'])->name('customer.register.process');
 
