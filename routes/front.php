@@ -16,4 +16,5 @@ Route::get('/product/single/{id}',[SingleProductController::class,'singleProduct
 //Customer Auth 
 Route::middleware('guest.customer')->group(function(){
     Route::get('/login',[CustomerAuthController::class,'loginShow'])->name('customer.login');
+    Route::get('/register',[CustomerAuthController::class,'registerShow'])->name('customer.register');
 });
