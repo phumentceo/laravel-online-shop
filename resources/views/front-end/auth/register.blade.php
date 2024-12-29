@@ -13,7 +13,7 @@
           <h2 class="text-center">Create Your Account</h2>
           <form class="text-left clearfix" action="{{ route('customer.register.process') }}" method="POST" onsubmit="showLoading(this)">
 
-            @csrf <!-- CSRF Token for security -->
+            @csrf
 
             <div class="form-group">
               <input type="text" class="form-control" name="name" placeholder="Full Name" value="{{ old('name') }}">
@@ -64,11 +64,10 @@
   </div>
 </section>
 
-<!-- JavaScript to handle button loading -->
 <script>
   function showLoading(form) {
     const submitButton = form.querySelector("#submitBtn");
-    submitButton.disabled = true; // Disable button to prevent double submissions
+    submitButton.disabled = true;
     submitButton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...`;
     return true;
   }
