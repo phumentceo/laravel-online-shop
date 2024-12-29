@@ -26,9 +26,9 @@ class AuthController extends Controller
 
                 if(Auth::user()->role == 1){
                     return redirect()->route('dashboard.index');
-                }elseif(Auth::user()->role == 2){
-                    return redirect()->route('category.index');
-                } 
+                }else{
+                    return redirect()->back()->with('error','You are not admin');
+                }
              }else{
                 return redirect()->back()->with('error','Invalid Password or Email');
             }

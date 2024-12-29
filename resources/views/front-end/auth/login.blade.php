@@ -23,7 +23,7 @@
               <button type="submit" class="btn btn-main text-center" >Login</button>
             </div>
           </form>
-          <p class="mt-20">New in this site ?<a href="signin.html"> Create New Account</a></p>
+          <p class="mt-20">New in this site ?<a href="{{ route('customer.register') }}"> Create New Account</a></p>
         </div>
       </div>
     </div>
