@@ -30,6 +30,13 @@
             </div>
 
             <div class="form-group">
+                <input type="text" class="form-control" name="phone" placeholder="Phone Number" value="{{ old('phone') }}">
+                @error('phone')
+                  <small class="text-danger">{{ $message }}</small>
+                @enderror
+              </div>
+
+            <div class="form-group">
               <input type="password" class="form-control" name="password" placeholder="Password">
               @error('password')
                 <small class="text-danger">{{ $message }}</small>

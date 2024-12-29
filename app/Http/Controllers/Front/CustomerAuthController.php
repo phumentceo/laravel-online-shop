@@ -22,7 +22,8 @@ class CustomerAuthController extends Controller
         // Validate the request data
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'phone' => 'required|string|min:9|unique:users,phone',
             'password' => 'required|string',
             'confirm_password' => 'required|same:password',
         ]);
@@ -32,6 +33,7 @@ class CustomerAuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'phone'   => $request->phone,
             'role'    => 2
         ]);
 
