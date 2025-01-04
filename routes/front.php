@@ -22,4 +22,7 @@ Route::middleware('guest.customer')->group(function(){
     Route::get('/product/shop/{id}',[HomeController::class,'productCategory'])->name('product.category');
     Route::get('/product/view',[HomeController::class,'viewProduct'])->name('product.view');
     Route::get('/product/single/{id}',[SingleProductController::class,'singleProduct'])->name('product.single');
+
+    Route::get('/send',[CustomerAuthController::class,'sendEmail'])->name('send.emai.show');
+    Route::post('/send/process',[CustomerAuthController::class,'sendEmailProcess'])->name('send.email.process');
 });

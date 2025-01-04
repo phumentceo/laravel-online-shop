@@ -21,10 +21,8 @@ class CustomerAuthController extends Controller
             'password' => 'required|string',
         ]);
         
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
-            if(Auth::check() && Auth::user()->role == 2){
-                return redirect()->route('home.index');
-            }
+        if(Auth::attempt(['email' => $request->email, 'password' => $request->password],$request->filled('remember_me'))){
+            return redirect()->route('home.index'); 
         }
 
         return redirect()->back()->with('error', 'Invalid email or password');
@@ -56,6 +54,23 @@ class CustomerAuthController extends Controller
 
         return redirect()->route('customer.login')->with('success', 'Account created successfully!');
 
+    }
+
+
+    public function sendEmail(){
+        return view('front-end.auth.send-email');
+    }
+
+    public function sendEmailProcess(Request $request){
+        // Validate the request data
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        // Send email to user
+        
+
+        return redirect()->route('customer.login')->with('success', 'Email sent successfully!');
     }
 
 }
