@@ -7,7 +7,9 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Verify Your Email</h1>
-    <h2>{{ $code }}</h2>
+    <h1>LIKA ONLINE SHOP</h1>
+    <h2>Thank you {{ $data['name'] }}</h2>
+    <h2>Code verify <span style="color: red;">{{ $data['code'] }}</span>  </h2>
+    <p>code the expire in 20mn</p>
 </body>
 </html>

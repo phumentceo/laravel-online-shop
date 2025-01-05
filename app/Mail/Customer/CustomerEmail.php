@@ -12,11 +12,11 @@ class CustomerEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    
+    private $data;
 
-    public function __construct()
+    public function __construct($data)
     {
-        
+        $this->data = $data;
     }
 
     public function envelope(): Envelope
@@ -28,10 +28,9 @@ class CustomerEmail extends Mailable
 
     public function build(){
         
-        return $this->subject("The code verify")
-                    ->view('front-end.auth.email-verify')
+        return $this->view('front-end.auth.email-verify')
                     ->with([
-                        'code' => '123456'
+                        'data' => $this->data
                     ]);
     }
 

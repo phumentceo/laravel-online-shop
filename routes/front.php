@@ -23,4 +23,6 @@ Route::middleware('guest.customer')->group(function(){
 
     Route::get('/send',[CustomerAuthController::class,'sendEmail'])->name('send.emai.show');
     Route::post('/send/process',[CustomerAuthController::class,'sendEmailProcess'])->name('send.email.process');
+
+    Route::get('/verify/{token}',[CustomerAuthController::class,'codeVerify'])->name('code.verify');
 });

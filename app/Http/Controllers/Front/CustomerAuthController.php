@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use App\Mail\Customer\CustomerEmail;
+use App\Models\PasswordResetToken;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -69,15 +70,42 @@ class CustomerAuthController extends Controller
             'email' => 'required|email|exists:users,email',
         ]);
 
+        $code = mt_rand(100000, 999999); // This generates a random 5-digit number
+        $token = hash('sha256', random_bytes(30));
         
+        PasswordResetToken::updateOrCreate(
+            ['email' => $request->email],
+            [
+                     'token' => $token,
+                     'code' => $code, 
+                     'expires_at' => now()->addMinutes(20)
+                    ]
+        );
+
+        $customer = User::where('email', $request->email)->first();
+
+
+        $data = [
+            'name' => $customer->name,
+            'code' => $code,
+            'token' => $token,
+            'email' => $request->email
+        ];
         
 
-        Mail::to($request->email)->send(new CustomerEmail);
+        Mail::to($request->email)->send(new CustomerEmail($data));
         
 
-        return "Send email success";
+        return redirect()->route('code.verify',[
+            'token' => $token
+        ])->with('success','send code to email sucessful');
         
 
+    }
+
+    public function codeVerify(string $token){
+
+        return view('front-end.auth.code-verify');
     }
 
 
