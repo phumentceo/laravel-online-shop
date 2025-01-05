@@ -8,9 +8,7 @@
     <div class="row">
       <div class="col-md-6 col-md-offset-3">
         <div class="block text-center">
-          <a class="logo" href="index.html">
-            <img src="{{ asset('front-end/assets/images/logo.png') }}" alt="">
-          </a>
+          
           <div>
             @if (Session::has('success'))
                 <div class="alert alert-success">
@@ -23,15 +21,16 @@
             @endif
             
           </div>
-          <h2 class="text-center">Email Verify</h2>
+          <h2 class="text-center">Code verify with email</h2>
           
           <form class="text-left clearfix" action="{{ route('send.email.process') }}" method="POST" onsubmit="showLoading(this)">
 
 
             @csrf
             <div class="form-group mb-5">
-              <input type="text" class="form-control" name="code" placeholder="Email" value="{{ old('email') }}" placeholder="Enter code from your email">
-              @error('email')
+              <input type="text" class=" form-control" name="token" value="{{ $tokenData->token }}" id="">
+              <input type="text" class="form-control" name="code" value="{{ old('code') }}" placeholder="Enter code from your email">
+              @error('code')
                 <small class="text-danger">{{ $message }}</small>
               @enderror
             </div>

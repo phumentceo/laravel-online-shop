@@ -70,7 +70,7 @@ class CustomerAuthController extends Controller
             'email' => 'required|email|exists:users,email',
         ]);
 
-        $code = mt_rand(100000, 999999); // This generates a random 5-digit number
+        $code = mt_rand(100000, 999999);
         $token = hash('sha256', random_bytes(30));
         
         PasswordResetToken::updateOrCreate(
@@ -104,8 +104,21 @@ class CustomerAuthController extends Controller
     }
 
     public function codeVerify(string $token){
+        //verify token
+        $tokenData = PasswordResetToken::where('token', $token)->first();
 
-        return view('front-end.auth.code-verify');
+        if($tokenData && $tokenData->expires_at > now()){
+            return view('front-end.auth.code-verify',compact('tokenData'));
+        }
+
+        return redirect()->route('customer.login')->with('error','Token expired or invalid');
+        
+    }
+
+    public function codeVerifyProcess(Request $request){
+        //code verify process here
+
+
     }
 
 
