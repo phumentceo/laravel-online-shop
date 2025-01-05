@@ -27,4 +27,6 @@ Route::middleware('guest.customer')->group(function(){
     Route::get('/verify/{token}',[CustomerAuthController::class,'codeVerify'])->name('code.verify');
 
     Route::post('/verify/process',[CustomerAuthController::class,'codeVerifyProcess'])->name('code.verify.process');
+
+    Route::get('/reset/{code}/{token}',[CustomerAuthController::class,'']);
 });

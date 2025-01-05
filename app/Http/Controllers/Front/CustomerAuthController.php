@@ -117,9 +117,44 @@ class CustomerAuthController extends Controller
 
     public function codeVerifyProcess(Request $request){
         //code verify process here
+        $request->validate([
+            'code' => 'required|numeric',
+        ]);
+
+        // Find the token data
+        $tokenData = PasswordResetToken::where('token', $request->token)->first();
+
+        if (!$tokenData) {
+            return redirect()->back()->withErrors([
+                'code' => 'Invalid token provided.',
+            ]);
+        }
+
+        // Check if the code matches and is not expired
+        if ($tokenData->code != $request->code || $tokenData->expires_at <= now()) {
+            return redirect()->back()->withErrors([
+                'code' => 'The verification code is incorrect or has expired.',
+            ]);
+        }
+
+    
+
+       return redirect()->route('dashboard')->with('success', 'Code verified successfully!');
 
 
     }
+
+    public function resetPassword(string $code,string $token){
+        //verify token
+        $tokenData = PasswordResetToken::where('token', $token)->first();
+
+        if($tokenData && $tokenData->expires_at > now()){
+            return view('front-end.auth.new-password',compact('tokenData'));
+        }
+
+        return redirect()->route('customer.login')->with('error','Token expired or invalid');
+    }
+    
 
 
     
