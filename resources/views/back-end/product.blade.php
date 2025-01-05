@@ -1,32 +1,4 @@
 @extends('back-end.components.master')
-@section('styles')
-    <style>
-        #loadingOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1050;
-            visibility: hidden;
-            opacity: 0;
-            transition: visibility 0s, opacity 0.3s ease-in-out;
-        }
-
-        #loadingOverlay.active {
-            visibility: visible;
-            opacity: 1;
-        }
-
-        #loadingOverlay .spinner-border {
-            color: white;
-        }
-    </style>
-@endsection
 @section('contens')
     {{-- Modal create start --}}
     @include('back-end.messages.product.create')
@@ -36,13 +8,7 @@
     @include('back-end.messages.product.edit')
     {{-- Modal edit start --}}
 
-    {{-- Loading Page --}}
-    <div id="loadingOverlay">
-      <div class="spinner-border" role="status">
-          <span class="visually-hidden">Loading...</span>
-      </div>
-    </div>
-
+    
 
     <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
@@ -67,6 +33,7 @@
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
+                            
                         </thead>
                         <tbody class="products_list">
 
@@ -87,9 +54,11 @@
             </div>
         </div>
     </div>
+
 @endsection
 @section('scripts')
     <script>
+
         $(document).ready(function() {
 
             $('#color_add').select2({
@@ -105,19 +74,17 @@
             });
         });
 
-        const showLoader = () => {
-            document.getElementById("loadingOverlay").classList.add("active");
-        };
-
-        const hideLoader = () => {
-            document.getElementById("loadingOverlay").classList.remove("active");
-        };
-
-
         // Product Rendering
         const ProductList = (page = 1, search = null) => {
-            showLoader();
-            try{
+
+            $(".products_list").html(`
+                <tr>
+                    <td colspan="5" class="text-center">
+                        <div class="spinner-border text-primary" role="status">hello</div>
+                    </td>
+                </tr>
+            `);
+            
             $.ajax({
                 type: "POST",
                 url: "{{ route('product.list') }}",
@@ -132,37 +99,37 @@
                         let tr = '';
                         $.each(products, function(key, value) {
                             tr += `
-                <tr>
-                    <td>P${value.id}</td>
-                    <td>
-                       `;
-                            if (value.images.length > 0) {
-                                tr +=
-                                    `<img  src='{{ asset('uploads/product/${value.images[0].image}') }}'/>`;
-                            }
-                            tr += ` 
-                    </td>
-                    <td>${value.name}</td>
-                    <td>${value.categories.name}</td>
-                    <td>${value.brands.name}</td>
-                    <td>$${value.price}</td>
-                    <td>${value.qty}</td>
-                    <td>
-                       <span class='text-light p-1 badge ${value.qty > 1 ? 'badge-success' : 'badge-danger'}'>
-                         ${value.qty > 1? 'In Stock' : 'Out Stock' }
-                       </span> 
-                   </td>
-                    <td>
-                        <span class="text-light badge ${(value.status == 1)  ? 'badge-success' : 'badge-danger' }  p-1">
-                          ${(value.status == 1) ? 'Active' : 'Inactive' }
-                        </span>
-                    </td>
-                    <td>
-                        <button onclick="edit(${value.id})" type="button" class=" btn btn-info  btn-sm" data-bs-toggle="modal" data-bs-target="#modalUpdateProduct">Edit</button>
-                        <button onclick="ProductDelete(${value.id})" type="button" class="btn btn-danger btn-sm">Delete</button>
-                    </td>
-                </tr>
-            `;
+                                <tr>
+                                    <td>P${value.id}</td>
+                                    <td>
+                                    `;
+                                            if (value.images.length > 0) {
+                                                tr +=
+                                                    `<img  src='{{ asset('uploads/product/${value.images[0].image}') }}'/>`;
+                                            }
+                                            tr += ` 
+                                    </td>
+                                    <td>${value.name}</td>
+                                    <td>${value.categories.name}</td>
+                                    <td>${value.brands.name}</td>
+                                    <td>$${value.price}</td>
+                                    <td>${value.qty}</td>
+                                    <td>
+                                    <span class='text-light p-1 badge ${value.qty > 1 ? 'bg-success' : 'bg-danger'}'>
+                                        ${value.qty > 1? 'In Stock' : 'Out Stock' }
+                                    </span> 
+                                </td>
+                                    <td>
+                                        <span class="text-light badge ${(value.status == 1)  ? 'bg-success' : 'bg-danger' }  p-1">
+                                        ${(value.status == 1) ? 'Active' : 'Inactive' }
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button onclick="edit(${value.id})" type="button" class=" btn btn-info  btn-sm" data-bs-toggle="modal" data-bs-target="#modalUpdateProduct">Edit</button>
+                                        <button onclick="ProductDelete(${value.id})" type="button" class="btn btn-danger btn-sm">Delete</button>
+                                    </td>
+                                </tr>
+                            `;
                         })
 
                         $(".products_list").html(tr);
@@ -172,29 +139,29 @@
                         let totalPage = response.page.totalPage;
                         let currentPage = response.page.currentPage;
                         page = `
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination">
-                        <li onclick="PreviousPage(${currentPage})" class="page-item ${(currentPage == 1) ? 'd-none' : 'd-block' }">
-                        <a class="page-link" href="javascript:void()" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                        </li>`;
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination">
+                                    <li onclick="PreviousPage(${currentPage})" class="page-item ${(currentPage == 1) ? 'd-none' : 'd-block' }">
+                                    <a class="page-link" href="javascript:void()" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                    </li>`;
 
-                        for (let i = 1; i <= totalPage; i++) {
-                            page += `
-                                <li onclick="ProductPage(${i})" class="shadow-none page-item ${(i == currentPage) ? 'active' : '' }">
-                                    <a class="page-link" href="javascript:void()">${i}</a>
-                                </li>`;
-                        }
+                                    for (let i = 1; i <= totalPage; i++) {
+                                        page += `
+                                            <li onclick="ProductPage(${i})" class="shadow-none page-item ${(i == currentPage) ? 'active' : '' }">
+                                                <a class="page-link" href="javascript:void()">${i}</a>
+                                            </li>`;
+                                    }
 
-                        page += `<li onclick="NextPage(${currentPage})" class="page-item ${( currentPage == totalPage ) ? 'd-none' : 'd-block'}">
-                        <a class="page-link" href="javascript:void()" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                        </li>
-                    </ul>
-                </nav>
-                `;
+                                    page += `<li onclick="NextPage(${currentPage})" class="page-item ${( currentPage == totalPage ) ? 'd-none' : 'd-block'}">
+                                    <a class="page-link" href="javascript:void()" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        `;
 
                         if (totalPage > 1) {
                             $(".show-page").html(page);
@@ -203,15 +170,17 @@
                         }
 
 
-
+                    }else{
+                        $(".products_list").html('<tr><td colspan="5" class="text-center text-danger">No Product found.</td></tr>'); 
                     }
+                },
+                error: function() {
+                    $(".products_list").html('<tr><td colspan="5" class="text-center text-danger">Failed to load data.</td></tr>');
                 }
             });
-          }catch(error){
-            console.log(error);
-          } finally {
-            hideLoader();
-          }
+
+
+          
         }
 
         ProductList();
@@ -321,12 +290,12 @@
                         let img = ``;
                         $.each(images, function(key, value) {
                             img = `
-                    <div class="col-lg-4 col-md-6 col-12 mb-3">
-                        <input type="hidden" name="image_uploads[]" value="${value}">
-                        <img class="w-100" src="{{ asset('uploads/temp/${value}') }}">
-                        <button onclick="ProductCancelImage(this,'${value}')" type="button" class="btn btn-danger btn-sm ">cancel</button>
-                    </div>
-                  `;
+                                <div class="col-lg-4 col-md-6 col-12 mb-3">
+                                    <input type="hidden" name="image_uploads[]" value="${value}">
+                                    <img class="w-100" src="{{ asset('uploads/temp/${value}') }}">
+                                    <button onclick="ProductCancelImage(this,'${value}')" type="button" class="btn btn-danger btn-sm ">cancel</button>
+                                </div>
+                            `;
 
                             if (form === '.formUpdateProduct') {
                                 $('.show-images-edit').append(img);
@@ -334,12 +303,9 @@
                                 $('.show-images').append(img);
                             }
 
-
-
                         });
 
                         $('.image').val("");
-
 
                     }
                 }
@@ -464,10 +430,10 @@
                     let brand_option = ``;
                     $.each(brands, function(key, value) {
                         brand_option += `
-              <option value="${value.id}" ${(value.id == response.data.product.brand_id)? 'selected' : ''}>
-                ${value.name}
-              </option>
-              `;
+                        <option value="${value.id}" ${(value.id == response.data.product.brand_id)? 'selected' : ''}>
+                            ${value.name}
+                        </option>
+                        `;
                     });
                     //inner to brand edit 
                     $('.brand_edit').html(brand_option);
@@ -483,12 +449,10 @@
                     $.each(colors, function(key, value) {
                         if (color_ids.includes(String(value.id))) {
                             color_option += `
-                   <option value="${value.id}" selected >${value.name}</option>
-                `;
+                             <option value="${value.id}" selected >${value.name}</option>`;
                         } else {
                             color_option += `
-                  <option value="${value.id}">${value.name}</option>
-                `;
+                            <option value="${value.id}">${value.name}</option>`;
                         }
                     });
                     //inner to color edit 
@@ -501,17 +465,13 @@
                     let img = ``;
                     $.each(images, function(key, value) {
                         img = `
-                 <div class="col-lg-4 col-md-6 col-12 mb-3">
-                     <input type="text" name="old_image" value="${value.image}">
-                     <img class="w-100" src="{{ asset('uploads/product/${value.image}') }}">
-                     <button onclick="ProductCancelImage(this,'${value.image}')" type="button" class="btn btn-danger btn-sm ">cancel</button>
-                 </div>
-               `
+                            <div class="col-lg-4 col-md-6 col-12 mb-3">
+                                <input type="hidden" name="old_image" value="${value.image}">
+                                <img class="w-100" src="{{ asset('uploads/product/${value.image}') }}">
+                                <button onclick="ProductCancelImage(this,'${value.image}')" type="button" class="btn btn-danger btn-sm ">cancel</button>
+                            </div>`
                         $('.show-images-edit').append(img)
                     });
-
-                    //Images end
-
 
                 }
             });

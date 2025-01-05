@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Mail\Customer\CustomerEmail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class CustomerAuthController extends Controller
 {
@@ -62,15 +64,23 @@ class CustomerAuthController extends Controller
     }
 
     public function sendEmailProcess(Request $request){
-        // Validate the request data
+        
         $request->validate([
             'email' => 'required|email|exists:users,email',
         ]);
 
-        // Send email to user
+        
         
 
-        return redirect()->route('customer.login')->with('success', 'Email sent successfully!');
+        Mail::to($request->email)->send(new CustomerEmail);
+        
+
+        return "Send email success";
+        
+
     }
+
+
+    
 
 }

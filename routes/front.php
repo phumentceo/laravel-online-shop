@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Route;
 
 
 
-
-
 //Customer Auth 
 Route::middleware('guest.customer')->group(function(){
 

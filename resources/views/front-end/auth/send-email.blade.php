@@ -25,9 +25,9 @@
           </div>
           <h2 class="text-center">Email Verify</h2>
           
-          <form class="text-left clearfix" action="{{ route('customer.login.process') }}" method="POST" onsubmit="showLoading(this)">
+          <form class="text-left clearfix" action="{{ route('send.email.process') }}" method="POST" onsubmit="showLoading(this)">
 
-            
+
             @csrf
             <div class="form-group mb-5">
               <input type="email" class="form-control" name="email" placeholder="Email" value="{{ old('email') }}">
