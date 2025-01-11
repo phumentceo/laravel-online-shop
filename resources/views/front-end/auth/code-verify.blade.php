@@ -23,12 +23,12 @@
           </div>
           <h2 class="text-center">Code verify with email</h2>
           
-          <form class="text-left clearfix" action="{{ route('send.email.process') }}" method="POST" onsubmit="showLoading(this)">
+          <form class="text-left clearfix" action="{{ route('code.verify.process') }}" method="POST" onsubmit="showLoading(this)">
 
 
             @csrf
             <div class="form-group mb-5">
-              <input type="text" class=" form-control" name="token" value="{{ $tokenData->token }}" id="">
+              <input type="hidden" class=" form-control" name="token" value="{{ $tokenData->token }}" id="">
               <input type="text" class="form-control" name="code" value="{{ old('code') }}" placeholder="Enter code from your email">
               @error('code')
                 <small class="text-danger">{{ $message }}</small>

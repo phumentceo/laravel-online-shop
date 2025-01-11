@@ -22,9 +22,11 @@
           </div>
           <h2 class="text-center">Reset Password</h2>
           
-          <form class="text-left clearfix" action="{{ route('customer.login.process') }}" method="POST" onsubmit="showLoading(this)">
+          <form class="text-left clearfix" action="{{ route('reset.password.process') }}" method="POST" onsubmit="showLoading(this)">
             @csrf
             <div class="form-group">
+              <input type="hidden" value="{{ $tokenData->token }}" name="token">
+              <input type="hidden" value="{{ $tokenData->code }}" name="code">
               <input type="password" class="form-control" name="password" placeholder="New Password" value="{{ old('password') }}">
               @error('password')
                 <small class="text-danger">{{ $message }}</small>

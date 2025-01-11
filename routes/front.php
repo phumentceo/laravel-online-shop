@@ -28,5 +28,10 @@ Route::middleware('guest.customer')->group(function(){
 
     Route::post('/verify/process',[CustomerAuthController::class,'codeVerifyProcess'])->name('code.verify.process');
 
-    Route::get('/reset/{code}/{token}',[CustomerAuthController::class,'']);
+    Route::get('/reset/{code}/{token}',[CustomerAuthController::class,'resetPassword'])->name('reset.password.show');
+
+
+    Route::post('/reset/proccess',[CustomerAuthController::class,'resetPasswordProcess'])->name('reset.password.process');
+    
+
 });

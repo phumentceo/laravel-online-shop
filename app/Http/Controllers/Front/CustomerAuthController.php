@@ -115,6 +115,7 @@ class CustomerAuthController extends Controller
         
     }
 
+    #the function we used for verify code from email
     public function codeVerifyProcess(Request $request){
         //code verify process here
         $request->validate([
@@ -139,20 +140,71 @@ class CustomerAuthController extends Controller
 
     
 
-       return redirect()->route('dashboard')->with('success', 'Code verified successfully!');
+        //success
+        return redirect()->route('reset.password.show',[
+            'code' => $tokenData->code,
+            'token' => $tokenData->token,   
+        ])->with('success', 'Code verified successfully!');
 
 
     }
 
+    
+
+
+    #the function we used for show form reset password
     public function resetPassword(string $code,string $token){
+
         //verify token
-        $tokenData = PasswordResetToken::where('token', $token)->first();
+        $tokenData = PasswordResetToken::where('token', $token)
+                    ->where('code',$code)->first();
 
         if($tokenData && $tokenData->expires_at > now()){
             return view('front-end.auth.new-password',compact('tokenData'));
         }
 
         return redirect()->route('customer.login')->with('error','Token expired or invalid');
+
+    }
+
+    #the function we used for reset password
+    public function resetPasswordProcess(Request $request){
+
+
+        
+
+        $request->validate([
+            'password' => 'required|string|min:8',
+            'confirm_password' => 'required|same:password',
+        ]);
+
+        
+
+
+        // Find the token data
+        $tokenData = PasswordResetToken::where('token', $request->token)
+                    ->where('code',$request->code)->first();
+
+        if (!$tokenData) {
+            return redirect()->back()->with('error','Token expired or invalid');
+        }
+        
+
+        // Check if the code matches and is not expired
+        if ($tokenData->code != $request->code || $tokenData->expires_at <= now()) {
+            return redirect()->route('send.emai.show')->with('error','Token expired or invalid');
+        }
+
+
+        // Update the user's password
+        User::where('email', $tokenData->email)->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        // Delete the token
+        PasswordResetToken::where('token', $request->token)->delete();
+
+        return redirect()->route('home.index')->with('success', 'Password reset successfully!');
     }
     
 
