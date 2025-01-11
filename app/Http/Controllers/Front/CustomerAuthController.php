@@ -13,10 +13,12 @@ use Illuminate\Support\Facades\Mail;
 
 class CustomerAuthController extends Controller
 {
+    #the function we used for login form
     public function loginShow(){
         return view('front-end.auth.login');
     }
 
+    #the function we used for login process  after login form submitted
     public function loginProcess(Request $request){
         // Validate the request data
         $request->validate([
@@ -31,10 +33,13 @@ class CustomerAuthController extends Controller
         return redirect()->back()->with('error', 'Invalid email or password');
     }
 
+
+    #the function we used for register form
     public function registerShow(){
         return view('front-end.auth.register');
     }
 
+    #the function we used for register
     public function registerProcess(Request $request){
 
         // Validate the request data
@@ -59,11 +64,12 @@ class CustomerAuthController extends Controller
 
     }
 
-
+    #the function we used show send email
     public function sendEmail(){
         return view('front-end.auth.send-email');
     }
 
+    #the function we used for send email process
     public function sendEmailProcess(Request $request){
         
         $request->validate([
@@ -103,6 +109,8 @@ class CustomerAuthController extends Controller
 
     }
 
+
+    #the function we used for show verify code from email
     public function codeVerify(string $token){
         //verify token
         $tokenData = PasswordResetToken::where('token', $token)->first();
@@ -150,8 +158,6 @@ class CustomerAuthController extends Controller
     }
 
     
-
-
     #the function we used for show form reset password
     public function resetPassword(string $code,string $token){
 
@@ -170,16 +176,10 @@ class CustomerAuthController extends Controller
     #the function we used for reset password
     public function resetPasswordProcess(Request $request){
 
-
-        
-
         $request->validate([
             'password' => 'required|string|min:8',
             'confirm_password' => 'required|same:password',
         ]);
-
-        
-
 
         // Find the token data
         $tokenData = PasswordResetToken::where('token', $request->token)
@@ -188,7 +188,7 @@ class CustomerAuthController extends Controller
         if (!$tokenData) {
             return redirect()->back()->with('error','Token expired or invalid');
         }
-        
+
 
         // Check if the code matches and is not expired
         if ($tokenData->code != $request->code || $tokenData->expires_at <= now()) {
@@ -204,11 +204,9 @@ class CustomerAuthController extends Controller
         // Delete the token
         PasswordResetToken::where('token', $request->token)->delete();
 
+
         return redirect()->route('home.index')->with('success', 'Password reset successfully!');
     }
-    
 
-
-    
 
 }
