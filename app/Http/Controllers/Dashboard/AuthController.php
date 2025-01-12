@@ -10,18 +10,9 @@ use Illuminate\Support\Facades\Validator;
 class AuthController extends Controller
 {
     public function login(){
-        if(Auth::check()){
-            if(Auth::user()->role == 1){
-                return redirect()->route('dashboard.index');
-            }else{
-                return redirect()->route('category.index');
-            }
-            
-        }else{
-            return view('back-end.login');
-        }
-        
+        return view('back-end.login');
     }
+    
     public function authenticate(Request $request){
           $validator = Validator::make($request->all(),[
              'email' => 'required',
@@ -35,9 +26,9 @@ class AuthController extends Controller
 
                 if(Auth::user()->role == 1){
                     return redirect()->route('dashboard.index');
-                }elseif(Auth::user()->role == 2){
-                    return redirect()->route('category.index');
-                } 
+                }else{
+                    return redirect()->back()->with('error','You are not admin');
+                }
              }else{
                 return redirect()->back()->with('error','Invalid Password or Email');
             }

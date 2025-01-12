@@ -1,4 +1,7 @@
+<<<<<<< HEAD:routes/web.php
 
+=======
+>>>>>>> master:routes/admin.php
 <?php
 use App\Http\Controllers\Dashboard\AuthController;
 use App\Http\Controllers\Dashboard\BrandController;
@@ -9,10 +12,9 @@ use App\Http\Controllers\Dashboard\ImageController;
 use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\ProfileController;
 use App\Http\Controllers\Dashboard\UserController;
-use App\Http\Middleware\AuthMiddlware;
-use App\Http\Middleware\DashboardMiddleware;
 use Illuminate\Support\Facades\Route;
 
+<<<<<<< HEAD:routes/web.php
 
 //Authentication
 
@@ -37,6 +39,26 @@ Route::prefix("admin")->group(function(){
             Route::post("/user/list",[UserController::class,'list'])->name("user.list");
             Route::post("/user/store",[UserController::class,'store'])->name("user.store");
             Route::post("/user/destory",[UserController::class,'destory'])->name("user.destory");
+=======
+//Route with prefix
+Route::prefix('admin')->group(function(){
+
+    Route::middleware('guest.admin')->group(function(){
+        Route::get('/',[AuthController::class,'login'])->name('auth.index');
+        Route::post('/login',[AuthController::class,'authenticate'])->name('auth.authenticate');
+    });
+
+    Route::middleware('auth.admin')->group(function(){
+
+        //Dashboard Router
+        Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard.index');
+
+        //User Routers
+        Route::get("/user",[UserController::class,'index'])->name("user.index");
+        Route::post("/user/list",[UserController::class,'list'])->name("user.list");
+        Route::post("/user/store",[UserController::class,'store'])->name("user.store");
+        Route::post("/user/destory",[UserController::class,'destory'])->name("user.destory");
+>>>>>>> master:routes/admin.php
 
 
 
@@ -96,6 +118,17 @@ Route::prefix('user.destory')->group(function(){
         //Image Routers
         Route::post('/product/upload',[ImageController::class,'uploads'])->name('product.uploads');
         Route::post('/product/cancel',[ImageController::class,'cancel'])->name('product.cancel');
+<<<<<<< HEAD:routes/web.php
+=======
+
+
+        //Logout 
+        Route::get('/logout',[AuthController::class,'logout'])->name('auth.logout');
+    });
+
+
+
+>>>>>>> master:routes/admin.php
 });
 
 
@@ -182,7 +215,6 @@ Route::prefix('user.destory')->group(function(){
 
     
 // });
-
 
 
 

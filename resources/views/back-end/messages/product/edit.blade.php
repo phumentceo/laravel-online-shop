@@ -12,7 +12,7 @@
                     <div class="col-lg-8"> 
  
                         <div class="form-group"> 
-                            <input type="text" id="product_id" name="product_id" value="">
+                            <input type="hidden" id="product_id" name="product_id" value="">
                             <label for="title">Product Name</label> 
                             <input type="text" class="title_edit form-control" name="title">
                             <p></p> 
