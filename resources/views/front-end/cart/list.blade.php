@@ -25,7 +25,7 @@
             <div class="row">
                 <div class="col-md-8 col-md-offset-2">
                     @if (Session::has('success'))
-                        <div class=" alert alert-success pb-0">
+                        <div class=" alert alert-success pb-0 text-center">
                            Congratulation❤️😘 <span>{{ Session::get('success') }}</span>
                         </div>
                     @endif
@@ -33,56 +33,38 @@
 
                     <div class="block">
                         <div class="product-list">
-                        <form method="post">
-                            <table class="table">
-                            <thead>
-                                <tr>
-                                <th class="">Item Name</th>
-                                <th class="">Item Price</th>
-                                <th class="">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="">
-                                <td class="">
-                                    <div class="product-info">
-                                    <img width="80" src="{{ asset('front-end/assets/images/shop/cart/cart-1.jpg') }}" alt="" />
-                                    <a href="#!">Sunglass</a>
-                                    </div>
-                                </td>
-                                <td class="">$200.00</td>
-                                <td class="">
-                                    <a class="product-remove" href="#!">Remove</a>
-                                </td>
-                                </tr>
-                                <tr class="">
-                                <td class="">
-                                    <div class="product-info">
-                                    <img width="80" src="{{ asset('front-end/assets/images/shop/cart/cart-2.jpg') }}" alt="" />
-                                    <a href="#!">Airspace</a>
-                                    </div>
-                                </td>
-                                <td class="">$200.00</td>
-                                <td class="">
-                                    <a class="product-remove" href="#!">Remove</a>
-                                </td>
-                                </tr>
-                                <tr class="">
-                                <td class="">
-                                    <div class="product-info">
-                                    <img width="80" src="{{ asset('front-end/assets/images/shop/cart/cart-3.jpg') }}" alt="" />
-                                    <a href="#!">Bingo</a>
-                                    </div>
-                                </td>
-                                <td class="">$200.00</td>
-                                <td class="">
-                                    <a class="product-remove" href="#!">Remove</a>
-                                </td>
-                                </tr>
-                            </tbody>
-                            </table>
-                            <a href="checkout.html" class="btn btn-main pull-right">Checkout</a>
-                        </form>
+                            <form method="post">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                        <th class="">Item Name</th>
+                                        <th class="">Item Price</th>
+                                        <th class="">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($items as $item )
+                                            @php
+                                                $image = $item->attributes->image;
+                                            @endphp
+                                            <tr class="">
+                                                <td class="">
+                                                    <div class="product-info">
+                                                    <img width="80" src="{{ asset('uploads/product/'.$image) }}" alt="" />
+                                                    <a href="#!">{{ $item->name }}</a>
+                                                    </div>
+                                                </td>
+                                                <td class="">${{ $item->price }}</td>
+                                                <td class="">
+                                                    <a class="product-remove" href="{{ route('cart.remove',$item->id) }}">Remove</a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        
+                                    </tbody>
+                                </table>
+                                <a href="checkout.html" class="btn btn-main pull-right">Checkout</a>
+                            </form>
                         </div>
                     </div>
                 </div>
