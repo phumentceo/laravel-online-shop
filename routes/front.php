@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\Front\CustomerAuthController;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Front\SingleProductController;
@@ -33,5 +34,31 @@ Route::middleware('guest.customer')->group(function(){
 
     Route::post('/reset/proccess',[CustomerAuthController::class,'resetPasswordProcess'])->name('reset.password.process');
     
+
+});
+
+
+Route::middleware('auth.customer')->group(function(){
+
+
+    //router of cart
+    Route::name('cart.')->group(function () {
+        // Display the cart
+        Route::get('/cart', [CartController::class, 'index'])->name('index');
+    
+        // Add item to the cart
+        Route::post('/cart/add', [CartController::class, 'add'])->name('add');
+    
+        // Update item quantity in the cart
+        Route::post('/cart/update/{id}', [CartController::class, 'update'])->name('update');
+    
+        // Remove item from the cart
+        Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('remove');
+    
+        // Clear the entire cart
+        Route::post('/cart/clear', [CartController::class, 'clear'])->name('clear');
+        
+    });
+
 
 });
