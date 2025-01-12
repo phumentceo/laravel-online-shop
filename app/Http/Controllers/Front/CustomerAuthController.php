@@ -157,7 +157,6 @@ class CustomerAuthController extends Controller
 
     }
 
-    
     #the function we used for show form reset password
     public function resetPassword(string $code,string $token){
 
