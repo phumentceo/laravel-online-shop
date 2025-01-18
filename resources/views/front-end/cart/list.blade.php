@@ -38,6 +38,7 @@
                                     <thead>
                                         <tr>
                                         <th class="">Item Name</th>
+                                        <th class="">Item Quantity</th>
                                         <th class="">Item Price</th>
                                         <th class="">Actions</th>
                                         </tr>
@@ -52,6 +53,13 @@
                                                     <div class="product-info">
                                                     <img width="80" src="{{ asset('uploads/product/'.$image) }}" alt="" />
                                                     <a href="#!">{{ $item->name }}</a>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="qty-control">
+                                                        <button type="submit" name="action" value="decrease-{{ $item->id }}" class="btn btn-sm btn-danger">-</button>
+                                                        <input type="number" name="qty[{{ $item->id }}]" value="{{ $item->quantity }}" min="1" style="width: 60px; text-align: center; padding: 3px; outline: none;"  readonly/>
+                                                        <button type="submit" name="action" value="increase-{{ $item->id }}" class="btn btn-sm btn-success">+</button>
                                                     </div>
                                                 </td>
                                                 <td class="">${{ $item->price }}</td>

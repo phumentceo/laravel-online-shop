@@ -15,6 +15,11 @@ class CartController extends Controller
         // Get all items in the cart
         $items = Cart::getContent();
 
+        // Check if the cart is empty
+        if($items->isEmpty()){
+            return redirect()->route('home.index');
+        }
+
         // Return the cart view with the items
         return view('front-end.cart.list', compact('items'));
         
