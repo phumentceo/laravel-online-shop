@@ -57,9 +57,9 @@
                                                 </td>
                                                 <td>
                                                     <div class="qty-control">
-                                                        <button type="submit" name="action" value="decrease-{{ $item->id }}" class="btn btn-sm btn-danger">-</button>
-                                                        <input type="number" name="qty[{{ $item->id }}]" value="{{ $item->quantity }}" min="1" style="width: 60px; text-align: center; padding: 3px; outline: none;"  readonly/>
-                                                        <button type="submit" name="action" value="increase-{{ $item->id }}" class="btn btn-sm btn-success">+</button>
+                                                        <button type="button" name="action" onclick="decrementQty()" class="btn btn-sm btn-danger">-</button>
+                                                        <input id="product-qty" type="number" name="qty[{{ $item->id }}]" value="{{ $item->quantity }}" min="1" style="width: 60px; text-align: center; padding: 3px; outline: none;"  readonly/>
+                                                        <button type="button" name="action" onclick="incrementQty()" class="btn btn-sm btn-success">+</button>
                                                     </div>
                                                 </td>
                                                 <td class="">${{ $item->price }}</td>
@@ -81,4 +81,25 @@
         </div>
     </div>
 
+@endsection
+
+@section('script')
+  <script>
+    const incrementQty = () => {
+        let qty = $('#product-qty').val();
+        qty++;
+        $('#product-qty').val(qty);
+    }
+
+
+    const decrementQty = () => {
+        let qty = $('#product-qty').val();
+        qty--;
+        if(qty >= 1) {
+            $('#product-qty').val(qty);
+        }
+    }
+
+
+  </script>
 @endsection
