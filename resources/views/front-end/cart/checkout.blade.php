@@ -75,42 +75,44 @@
                </div>
             </div>
             <div class="col-md-4">
-               <div class="product-checkout-details">
-                  <div class="block">
-                     <h4 class="widget-title">Order Summary</h4>
-                     <div class="media product-card">
-                        <a class="pull-left" href="product-single.html">
-                           <img class="media-object" src="images/shop/cart/cart-1.jpg" alt="Image" />
-                        </a>
-                        <div class="media-body">
-                           <h4 class="media-heading"><a href="product-single.html">Ambassador Heritage 1921</a></h4>
-                           <p class="price">1 x $249</p>
-                           <span class="remove" >Remove</span>
+                <div class="product-checkout-details">
+                    <div class="block">
+                        <h4 class="widget-title">Order Summary</h4>
+                        @foreach($items as $item)
+                        <div class="media product-card">
+                            <a class="pull-left" href="#">
+                            <img class="media-object" src="{{ $item->attributes->image }}" alt="{{ $item->name }}" />
+                            </a>
+                            <div class="media-body">
+                            <h4 class="media-heading">{{ $item->name }}</h4>
+                            <p class="price">{{ $item->quantity }} x ${{ number_format($item->price, 2) }}</p>
+                            <span class="remove">
+                                <a href="{{ route('cart.remove', $item->id) }}">Remove</a>
+                            </span>
+                            </div>
                         </div>
-                     </div>
-                     <div class="discount-code">
-                        <p>Have a discount ? <a data-toggle="modal" data-target="#coupon-modal" href="#!">enter it here</a></p>
-                     </div>
-                     <ul class="summary-prices">
-                        <li>
-                           <span>Subtotal:</span>
-                           <span class="price">$190</span>
-                        </li>
-                        <li>
-                           <span>Shipping:</span>
-                           <span>Free</span>
-                        </li>
-                     </ul>
-                     <div class="summary-total">
-                        <span>Total</span>
-                        <span>$250</span>
-                     </div>
-                     <div class="verified-icon">
-                        <img src="images/shop/verified.png">
-                     </div>
-                  </div>
-               </div>
+                        @endforeach
+                        <ul class="summary-prices">
+                            <li>
+                            <span>Subtotal:</span>
+                            <span class="price">${{ number_format($subtotal, 2) }}</span>
+                            </li>
+                            <li>
+                            <span>Shipping:</span>
+                            <span>Free</span>
+                            </li>
+                        </ul>
+                        <div class="summary-total">
+                            <span>Total</span>
+                            <span>${{ number_format($total, 2) }}</span>
+                        </div>
+                        <div class="verified-icon">
+                            <img src="images/shop/verified.png" alt="Verified">
+                        </div>
+                    </div>
+                </div>
             </div>
+
          </div>
       </div>
    </div>
