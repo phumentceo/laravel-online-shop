@@ -13,6 +13,8 @@ class CheckoutController extends Controller
          // Get all items in the cart
         $items = Cart::getContent();
 
+        return $items;
+
         // Calculate subtotal
         $subtotal = Cart::getSubTotal();
 

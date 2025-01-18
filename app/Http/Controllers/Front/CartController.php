@@ -29,17 +29,33 @@ class CartController extends Controller
 
         $image = $product->Images->first();
 
+        $cartItem = Cart::get($id);
 
-        // Add item to the cart
-        Cart::add([
-            'id' =>   $product->id, 
-            'name' => $product->name,
-            'price' => $product->price,
-            'quantity' => $product->qty,
-            'attributes' => [
-                'image' => $image->image,
-            ],
-        ]);
+        
+        if ($cartItem) {
+            // If item exists, update the quantity (+1)
+            Cart::update($id, [
+                'quantity' => [
+                    'relative' => true,
+                    'value' => 1,
+                ],
+            ]);
+        }else{
+            // Add item to the cart
+            Cart::add([
+                'id' =>   $product->id, 
+                'name' => $product->name,
+                'price' => $product->price,
+                'quantity' => 1,
+                'attributes' => [
+                    'image' => $image->image,
+                ],
+            ]);
+        }
+
+
+        
+        
 
         return redirect()->route('cart.list')->with('success', 'Item added to cart!');
 
@@ -85,5 +101,5 @@ class CartController extends Controller
         return redirect()->route('cart.index')->with('success', 'Cart cleared!');
     }
 
-    
+
 }

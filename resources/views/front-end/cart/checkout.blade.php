@@ -79,18 +79,21 @@
                     <div class="block">
                         <h4 class="widget-title">Order Summary</h4>
                         @foreach($items as $item)
-                        <div class="media product-card">
-                            <a class="pull-left" href="#">
-                            <img class="media-object" src="{{ $item->attributes->image }}" alt="{{ $item->name }}" />
-                            </a>
-                            <div class="media-body">
-                            <h4 class="media-heading">{{ $item->name }}</h4>
-                            <p class="price">{{ $item->quantity }} x ${{ number_format($item->price, 2) }}</p>
-                            <span class="remove">
-                                <a href="{{ route('cart.remove', $item->id) }}">Remove</a>
-                            </span>
+                            @php
+                            $image = $item->attributes->image
+                            @endphp
+                            <div class="media product-card">
+                                <a class="pull-left" href="#">
+                                <img class="media-object" src="{{ asset('uploads/product/'.$image) }}" alt="{{ $item->name }}" />
+                                </a>
+                                <div class="media-body">
+                                <h4 class="media-heading">{{ $item->name }}</h4>
+                                <p class="price">{{ $item->quantity }} x ${{ number_format($item->price, 2) }}</p>
+                                <span class="btn btn-danger btn-sm">
+                                    <a style="color:white;" href="{{ route('cart.remove', $item->id) }}">Remove</a>
+                                </span>
+                                </div>
                             </div>
-                        </div>
                         @endforeach
                         <ul class="summary-prices">
                             <li>
