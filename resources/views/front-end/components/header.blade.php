@@ -1,8 +1,9 @@
 <head>
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="utf-8">
     <title>Aviato | E-commerce template</title>
-  
+
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="Construction Html5 Template">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -31,4 +32,6 @@
   
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
+    <!-- Toastify messages -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
   </head>

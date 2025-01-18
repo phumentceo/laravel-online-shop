@@ -44,6 +44,7 @@ Route::middleware('auth.customer')->group(function(){
         Route::get('/cart/view',[CartController::class,'index'])->name('list');
         Route::get('/cart/add/{id}',[CartController::class,'add'])->name('add');
         Route::get('/cart/remove/{id}',[CartController::class,'remove'])->name('remove');
+        Route::post('cart/update',[CartController::class,'update'])->name('update');
     });
 
     Route::name('checkout.')->group(function(){

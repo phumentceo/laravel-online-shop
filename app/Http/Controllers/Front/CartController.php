@@ -67,24 +67,56 @@ class CartController extends Controller
     }
 
     // Update the quantity of an item in the cart
-    public function update(Request $request, $id)
-    {
-        // Validate the quantity
-        $request->validate([
-            'quantity' => 'required|integer|min:1',
-        ]);
+    public function update(Request $request){
+        $id = $request->id;
+        $action = $request->action;
 
-        // Update the item quantity in the cart
+        // Get the product and current cart item
+        $product = Products::find($id);
+        $cartItem = Cart::get($id);
+
+        if (!$product || !$cartItem) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Product not found in cart!',
+            ]);
+        }
+
+        // Calculate new quantity
+        $newQuantity = $cartItem->quantity;
+
+        if ($action === 'increase') {
+            $newQuantity += 1;
+        } elseif ($action === 'decrease') {
+            if ($newQuantity > 1) {
+                $newQuantity -= 1;
+            }
+        }
+
+        // Check if new quantity exceeds stock
+        if ($newQuantity > $product->qty) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Quantity exceeds available stock!',
+            ]);
+        }
+
+        // Update quantity in cart
         Cart::update($id, [
             'quantity' => [
-                'relative' => false, 
-                'value' => $request->quantity,
+                'relative' => false,
+                'value' => $newQuantity,
             ],
         ]);
 
-        // Redirect back with success message
-        return redirect()->route('cart.index')->with('success', 'Cart updated!');
+        return response()->json([
+            'success' => true,
+            'message' => 'Quantity updated successfully!',
+            'newQuantity' => $newQuantity,
+        ]);
     }
+
+
 
     // Remove an item from the cart
     public function remove($id)

@@ -56,11 +56,14 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <div class="qty-control">
-                                                        <button type="button" name="action" onclick="decrementQty()" class="btn btn-sm btn-danger">-</button>
-                                                        <input id="product-qty" type="number" name="qty[{{ $item->id }}]" value="{{ $item->quantity }}" min="1" style="width: 60px; text-align: center; padding: 3px; outline: none;"  readonly/>
-                                                        <button type="button" name="action" onclick="incrementQty()" class="btn btn-sm btn-success">+</button>
-                                                    </div>
+                                                    <td>
+                                                        <div class="qty-control">
+                                                            <button type="button" class="btn btn-sm btn-danger decrease-btn" data-id="{{ $item->id }}">-</button>
+                                                            <input type="number" name="qty[{{ $item->id }}]" value="{{ $item->quantity }}" min="1" style="width: 60px; text-align: center; padding: 3px; outline: none;" readonly class="item-qty-{{ $item->id }}" />
+                                                            <button type="button" class="btn btn-sm btn-success increase-btn" data-id="{{ $item->id }}">+</button>
+                                                        </div>
+                                                    </td>
+                                                    
                                                 </td>
                                                 <td class="">${{ $item->price }}</td>
                                                 <td class="">
@@ -85,19 +88,41 @@
 
 @section('script')
   <script>
-    const incrementQty = () => {
-        let qty = $('#product-qty').val();
-        qty++;
-        $('#product-qty').val(qty);
-    }
+    
+    // Handle increase button
+    $(".increase-btn").on("click", function () {
+        const itemId = $(this).data("id");
+        updateQuantity(itemId, "increase");
+    });
+
+    // Handle decrease button
+    $(".decrease-btn").on("click", function () {
+        const itemId = $(this).data("id");
+        updateQuantity(itemId, "decrease");
+    });
 
 
-    const decrementQty = () => {
-        let qty = $('#product-qty').val();
-        qty--;
-        if(qty >= 1) {
-            $('#product-qty').val(qty);
-        }
+
+    function updateQuantity(itemId, action) {
+        $.ajax({
+            url: "{{ route('cart.update') }}",
+            type: "POST",
+            data: {
+                id: itemId,
+                action: action,
+            },
+            success: function (response) {
+                if (response.success) {
+                    $(`.item-qty-${itemId}`).val(response.newQuantity);
+                    Message(response.message,true);
+                } else {    
+                    Message(response.message,false);
+                }
+            },
+            error: function () {
+                alert("An error occurred. Please try again.");
+            }
+        });
     }
 
 
