@@ -84,4 +84,6 @@ class CartController extends Controller
         // Redirect back with success message
         return redirect()->route('cart.index')->with('success', 'Cart cleared!');
     }
+
+    
 }

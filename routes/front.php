@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Front\CartController;
+use App\Http\Controllers\Front\CheckoutController;
 use App\Http\Controllers\Front\CustomerAuthController;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Front\SingleProductController;
@@ -43,6 +44,10 @@ Route::middleware('auth.customer')->group(function(){
         Route::get('/cart/view',[CartController::class,'index'])->name('list');
         Route::get('/cart/add/{id}',[CartController::class,'add'])->name('add');
         Route::get('/cart/remove/{id}',[CartController::class,'remove'])->name('remove');
+    });
+
+    Route::name('checkout.')->group(function(){
+        Route::get('/checkout',[CheckoutController::class,'index'])->name('index');
     });
 
 });
